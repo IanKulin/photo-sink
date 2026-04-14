@@ -12,27 +12,34 @@ const MIME_TO_EXT = {
   'image/avif': 'avif',
 };
 
-router.get('/image/:id', (req, res) => {
+router.get('/image/:id.:ext', (req, res) => {
   const row = stmts.getById.get(req.params.id);
-  if (!row) {
-    return res.status(404).render('error', { message: 'Image not found.' });
-  }
+  if (!row) return res.status(404).render('error', { message: 'Image not found.' });
   try {
     const imageBuffer = decrypt({
       iv: row.iv_image,
       ciphertext: row.image_data,
       authTag: row.auth_tag_image,
     });
-    const imageDataUri = `data:${row.mime_type};base64,${imageBuffer.toString('base64')}`;
-    return res.render('image', {
-      id: row.id,
-      mime_type: row.mime_type,
-      created_at: row.created_at,
-      imageDataUri,
-    });
+    res.set('Content-Type', row.mime_type);
+    return res.send(imageBuffer);
   } catch (_) {
     return res.status(500).render('error', { message: 'Failed to load image.' });
   }
+});
+
+router.get('/image/:id', (req, res) => {
+  const row = stmts.getById.get(req.params.id);
+  if (!row) {
+    return res.status(404).render('error', { message: 'Image not found.' });
+  }
+  const ext = MIME_TO_EXT[row.mime_type] || 'bin';
+  return res.render('image', {
+    id: row.id,
+    mime_type: row.mime_type,
+    created_at: row.created_at,
+    imageSrc: `/image/${row.id}.${ext}`,
+  });
 });
 
 router.get('/image/:id/download', (req, res) => {

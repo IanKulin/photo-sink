@@ -35,7 +35,7 @@ test.describe('Stage 5 — Image Detail, Download & Delete', () => {
     const img = page.locator('.image-detail img');
     await expect(img).toBeVisible();
     const src = await img.getAttribute('src');
-    expect(src).toMatch(/^data:image\/(jpeg|png|gif|webp|avif);base64,/);
+    expect(src).toMatch(/^\/image\/\d+\.\w+$/);
   });
 
   test('detail page shows image ID', async ({ page }) => {
@@ -183,7 +183,7 @@ test.describe('Stage 5 — Image Detail, Download & Delete', () => {
     db.prepare('UPDATE images SET auth_tag_image = ? WHERE id = ?').run(Buffer.alloc(16, 0x00), id);
     db.close();
 
-    const res = await page.goto(`/image/${id}`);
+    const res = await page.goto(`/image/${id}.jpg`);
     expect(res.status()).toBe(500);
 
     // Clean up
