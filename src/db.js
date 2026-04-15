@@ -29,9 +29,7 @@ const stmts = {
     INSERT INTO images (mime_type, iv_image, image_data, iv_thumb, thumb_data, auth_tag_image, auth_tag_thumb)
     VALUES (@mime_type, @iv_image, @image_data, @iv_thumb, @thumb_data, @auth_tag_image, @auth_tag_thumb)
   `),
-  getAll: db.prepare(
-    "SELECT id, created_at FROM images ORDER BY created_at ASC"
-  ),
+  getAll: db.prepare("SELECT id, created_at FROM images ORDER BY created_at ASC"),
   getById: db.prepare("SELECT * FROM images WHERE id = ?"),
   deleteById: db.prepare("DELETE FROM images WHERE id = ?"),
 };
