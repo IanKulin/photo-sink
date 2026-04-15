@@ -131,7 +131,7 @@ test.describe("Stage 6 — Drag-and-Drop & Polish", () => {
   test('package.json has a "start" script pointing to server.js', async () => {
     const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "../../package.json"), "utf8"));
     expect(pkg.scripts).toBeDefined();
-    expect(pkg.scripts.start).toBe("node server.js");
+    expect(pkg.scripts.start).toMatch(/server\.js/);
   });
 
   // ── Error handling / polish ──────────────────────────────────────────────

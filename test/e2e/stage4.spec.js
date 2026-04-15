@@ -99,7 +99,7 @@ test.describe("Stage 4 — Gallery Page", () => {
     await uploadImage(page, "red.jpg");
     await page.goto("/gallery");
     const hrefs = await page
-      .locator(".gallery-card")
+      .locator(".gallery-card__link")
       .evaluateAll((els) => els.map((el) => el.getAttribute("href")));
     for (const href of hrefs) {
       expect(href).toMatch(/^\/image\/\d+$/);

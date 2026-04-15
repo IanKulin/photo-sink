@@ -1,16 +1,35 @@
-<%- include('_header', { page: 'gallery' }) %>
+<%- include('_header', { page: 'gallery', actionsPartial: '_gallery-actions' }) %>
 
     <% if (images.length === 0) { %>
     <p class="gallery-empty">No images yet. <a href="/">Upload one!</a></p>
     <% } else { %>
     <div class="gallery-grid">
       <% images.forEach(function(img) { %>
-      <a class="gallery-card" href="/image/<%= img.id %>">
-        <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image <%= img.id %>" class="gallery-card__img">
-        <time class="gallery-card__date" datetime="<%= img.created_at %>"><%= img.created_at %></time>
-      </a>
+      <div class="gallery-card" data-id="<%= img.id %>">
+        <label class="gallery-card__select" aria-label="Select image">
+          <input type="checkbox" class="gallery-card__checkbox" value="<%= img.id %>">
+        </label>
+        <a href="/image/<%= img.id %>" class="gallery-card__link">
+          <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image <%= img.id %>" class="gallery-card__img">
+          <time class="gallery-card__date" datetime="<%= img.created_at %>"><%= img.created_at %></time>
+        </a>
+      </div>
       <% }); %>
     </div>
     <% } %>
+
+    <form id="bulk-delete-form" action="/gallery/delete" method="post"></form>
+
+<div class="modal-backdrop" id="bulk-modal" role="dialog" aria-modal="true" aria-labelledby="bulk-modal-msg" hidden>
+      <div class="modal">
+        <p class="modal__body" id="bulk-modal-msg">Delete the selected images? This cannot be undone.</p>
+        <div class="modal__actions">
+          <button id="bulk-confirm-btn" class="btn btn--danger" type="button">Delete</button>
+          <button id="bulk-cancel-btn" class="btn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/gallery.js" defer></script>
 
 <%- include('_footer') %>

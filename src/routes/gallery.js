@@ -1,5 +1,5 @@
 const express = require("express");
-const { stmts } = require("../db");
+const { stmts, deleteManyById } = require("../db");
 const logger = require("../logger");
 const router = express.Router();
 
@@ -12,6 +12,24 @@ router.get("/gallery", (req, res) => {
     logger.error("Failed to load gallery: %s", err.message);
     res.status(500).render("error", { message: "Failed to load gallery." });
   }
+});
+
+router.post("/gallery/delete", (req, res) => {
+  const raw = [].concat(req.body?.ids ?? []);
+  if (raw.length === 0) {
+    return res.redirect("/gallery");
+  }
+  const ids = raw.map(Number).filter((n) => Number.isInteger(n) && n > 0);
+  if (ids.length === 0) {
+    return res.redirect("/gallery");
+  }
+  try {
+    deleteManyById(ids);
+    logger.info("Bulk deleted %d image(s): %s", ids.length, ids.join(","));
+  } catch (err) {
+    logger.error("Bulk delete failed: %s", err.message);
+  }
+  return res.redirect("/gallery");
 });
 
 module.exports = router;

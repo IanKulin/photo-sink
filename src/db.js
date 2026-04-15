@@ -72,4 +72,9 @@ function getDecryptedThumb(id) {
   return { id: row.id, mime_type: row.mime_type, created_at: row.created_at, thumbBuffer };
 }
 
-module.exports = { db, stmts, insertImage, getDecryptedImage, getDecryptedThumb };
+function deleteManyById(ids) {
+  const placeholders = ids.map(() => "?").join(",");
+  db.prepare(`DELETE FROM images WHERE id IN (${placeholders})`).run(...ids);
+}
+
+module.exports = { db, stmts, insertImage, getDecryptedImage, getDecryptedThumb, deleteManyById };
