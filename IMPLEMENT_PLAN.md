@@ -16,6 +16,7 @@ Each stage ends with a testable milestone. Complete stages in order.
    - Install dev dependencies: none required
 
 2. **Create directory structure**
+
    ```
    data/
    public/
@@ -46,6 +47,7 @@ Each stage ends with a testable milestone. Complete stages in order.
    - Listen on `process.env.PORT || 3000`
 
 7. **`.env.example`**
+
    ```
    ENCRYPTION_KEY=0000000000000000000000000000000000000000000000000000000000000000
    MAX_UPLOAD_BYTES=2097152
@@ -62,6 +64,7 @@ Each stage ends with a testable milestone. Complete stages in order.
    ```
 
 ### Test Checklist
+
 - [ ] `node server.js` starts without errors
 - [ ] Server prints listening message on correct port
 - [ ] `data/photosink.db` is created on disk
@@ -115,6 +118,7 @@ Each stage ends with a testable milestone. Complete stages in order.
 5. **`app.js`** — Mount upload router at `/`
 
 ### Test Checklist
+
 - [ ] `GET /` renders the upload page
 - [ ] Drag-and-drop zone is visible with dashed border
 - [ ] `?success=1` shows green banner
@@ -162,6 +166,7 @@ Each stage ends with a testable milestone. Complete stages in order.
 3. **`app.js`** — Add `express.urlencoded({ extended: false })` middleware
 
 ### Test Checklist
+
 - [ ] Upload a JPEG via file input → redirects to `/?success=1`
 - [ ] Upload a PNG via file input → success
 - [ ] Upload a GIF via file input → success
@@ -204,6 +209,7 @@ Each stage ends with a testable milestone. Complete stages in order.
 4. **`app.js`** — Mount gallery router
 
 ### Test Checklist
+
 - [ ] `GET /gallery` renders without error after uploading at least one image
 - [ ] Thumbnails are visible in a grid layout
 - [ ] Each card shows the upload date
@@ -257,6 +263,7 @@ Each stage ends with a testable milestone. Complete stages in order.
 4. **Wire up 404 handler** in `app.js` for unknown routes
 
 ### Test Checklist
+
 - [ ] Click a gallery thumbnail → full-size image renders on detail page
 - [ ] Upload date and image ID are displayed
 - [ ] Download button triggers browser download with correct filename (e.g. `photo-3.jpg`)
@@ -289,6 +296,7 @@ Each stage ends with a testable milestone. Complete stages in order.
 4. **`package.json`** — Add `"start": "node server.js"` script
 
 ### Test Checklist
+
 - [ ] Drag an image file onto the drop zone → zone highlights on hover, form submits on drop
 - [ ] Drag a non-image file → rejected with `/?error=Unsupported+image+type` (handled server-side; drag still submits)
 - [ ] Drop multiple files → only first is submitted (Multer single-field)
@@ -318,11 +326,11 @@ Each stage ends with a testable milestone. Complete stages in order.
 
 ## Implementation Order Summary
 
-| Stage | Deliverable | End State |
-|---|---|---|
-| 1 | Scaffold + DB + Crypto + Server | Server boots, DB created, key validated |
-| 2 | Upload page UI (no backend) | Styled upload page renders with banners |
-| 3 | File & URL upload pipeline | Images stored encrypted in DB |
-| 4 | Gallery page | Thumbnails visible in grid |
-| 5 | Image detail, download, delete | Full CRUD flow complete |
-| 6 | Drag-and-drop JS + polish | Production-ready UX |
+| Stage | Deliverable                     | End State                               |
+| ----- | ------------------------------- | --------------------------------------- |
+| 1     | Scaffold + DB + Crypto + Server | Server boots, DB created, key validated |
+| 2     | Upload page UI (no backend)     | Styled upload page renders with banners |
+| 3     | File & URL upload pipeline      | Images stored encrypted in DB           |
+| 4     | Gallery page                    | Thumbnails visible in grid              |
+| 5     | Image detail, download, delete  | Full CRUD flow complete                 |
+| 6     | Drag-and-drop JS + polish       | Production-ready UX                     |

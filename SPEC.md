@@ -8,25 +8,25 @@ A lightweight web app for storing and viewing digital photos and images. Images 
 
 ## Stack
 
-| Concern | Choice |
-|---|---|
-| Runtime | Node.js |
-| Framework | Express |
-| Templating | EJS |
-| Database | SQLite via `better-sqlite3` |
-| File uploads | Multer |
-| Image processing | Sharp (thumbnails) |
-| Encryption | Node.js built-in `crypto` (AES-256-GCM) |
+| Concern          | Choice                                  |
+| ---------------- | --------------------------------------- |
+| Runtime          | Node.js                                 |
+| Framework        | Express                                 |
+| Templating       | EJS                                     |
+| Database         | SQLite via `better-sqlite3`             |
+| File uploads     | Multer                                  |
+| Image processing | Sharp (thumbnails)                      |
+| Encryption       | Node.js built-in `crypto` (AES-256-GCM) |
 
 ---
 
 ## Environment Variables
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `ENCRYPTION_KEY` | Yes | — | 32-byte hex string used as the AES-256-GCM encryption key |
-| `MAX_UPLOAD_BYTES` | No | `2097152` (2 MB) | Maximum size in bytes for uploaded images and URL-fetched images |
-| `PORT` | No | `3000` | Port the Express server listens on |
+| Variable           | Required | Default          | Description                                                      |
+| ------------------ | -------- | ---------------- | ---------------------------------------------------------------- |
+| `ENCRYPTION_KEY`   | Yes      | —                | 32-byte hex string used as the AES-256-GCM encryption key        |
+| `MAX_UPLOAD_BYTES` | No       | `2097152` (2 MB) | Maximum size in bytes for uploaded images and URL-fetched images |
+| `PORT`             | No       | `3000`           | Port the Express server listens on                               |
 
 ---
 
@@ -72,6 +72,7 @@ CREATE TABLE images (
 ## Accepted Image Formats
 
 Any image format that:
+
 1. Web browsers can display natively, **and**
 2. Sharp can process for thumbnail generation.
 

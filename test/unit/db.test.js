@@ -1,16 +1,16 @@
-const { test, describe, before, after } = require('node:test');
-const assert = require('node:assert/strict');
-const path = require('path');
-const fs = require('fs');
-const Database = require('better-sqlite3');
+const { test, describe, before, after } = require("node:test");
+const assert = require("node:assert/strict");
+const path = require("path");
+const fs = require("fs");
+const Database = require("better-sqlite3");
 
 // Use a separate in-memory DB for unit tests so we don't touch the real file
-describe('database module', () => {
+describe("database module", () => {
   let db;
 
   before(() => {
     // Open a fresh in-memory database with the same schema
-    db = new Database(':memory:');
+    db = new Database(":memory:");
     db.exec(`
       CREATE TABLE IF NOT EXISTS images (
         id             INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,29 +30,34 @@ describe('database module', () => {
     db.close();
   });
 
-  test('images table has correct columns', () => {
-    const cols = db.pragma('table_info(images)').map(c => c.name);
+  test("images table has correct columns", () => {
+    const cols = db.pragma("table_info(images)").map((c) => c.name);
     const expected = [
-      'id', 'mime_type', 'created_at',
-      'iv_image', 'image_data',
-      'iv_thumb', 'thumb_data',
-      'auth_tag_image', 'auth_tag_thumb',
+      "id",
+      "mime_type",
+      "created_at",
+      "iv_image",
+      "image_data",
+      "iv_thumb",
+      "thumb_data",
+      "auth_tag_image",
+      "auth_tag_thumb",
     ];
     assert.deepEqual(cols, expected);
   });
 
-  test('insert and retrieve a row', () => {
+  test("insert and retrieve a row", () => {
     const stmt = db.prepare(`
       INSERT INTO images (mime_type, iv_image, image_data, iv_thumb, thumb_data, auth_tag_image, auth_tag_thumb)
       VALUES (@mime_type, @iv_image, @image_data, @iv_thumb, @thumb_data, @auth_tag_image, @auth_tag_thumb)
     `);
 
     const row = {
-      mime_type: 'image/jpeg',
+      mime_type: "image/jpeg",
       iv_image: Buffer.alloc(12, 1),
-      image_data: Buffer.from('fake-image'),
+      image_data: Buffer.from("fake-image"),
       iv_thumb: Buffer.alloc(12, 2),
-      thumb_data: Buffer.from('fake-thumb'),
+      thumb_data: Buffer.from("fake-thumb"),
       auth_tag_image: Buffer.alloc(16, 3),
       auth_tag_thumb: Buffer.alloc(16, 4),
     };
@@ -61,15 +66,15 @@ describe('database module', () => {
     assert.equal(info.changes, 1);
     assert.ok(info.lastInsertRowid > 0);
 
-    const saved = db.prepare('SELECT * FROM images WHERE id = ?').get(info.lastInsertRowid);
-    assert.equal(saved.mime_type, 'image/jpeg');
+    const saved = db.prepare("SELECT * FROM images WHERE id = ?").get(info.lastInsertRowid);
+    assert.equal(saved.mime_type, "image/jpeg");
     assert.deepEqual(Buffer.from(saved.iv_image), row.iv_image);
     assert.deepEqual(Buffer.from(saved.image_data), row.image_data);
     assert.deepEqual(Buffer.from(saved.auth_tag_image), row.auth_tag_image);
   });
 
-  test('id is auto-incremented', () => {
-    const count = db.prepare('SELECT COUNT(*) as n FROM images').get();
+  test("id is auto-incremented", () => {
+    const count = db.prepare("SELECT COUNT(*) as n FROM images").get();
     const before = count.n;
 
     const stmt = db.prepare(`
@@ -77,33 +82,33 @@ describe('database module', () => {
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
     const b = Buffer.alloc(1);
-    stmt.run('image/png', b, b, b, b, b, b);
-    stmt.run('image/png', b, b, b, b, b, b);
+    stmt.run("image/png", b, b, b, b, b, b);
+    stmt.run("image/png", b, b, b, b, b, b);
 
-    const rows = db.prepare('SELECT id FROM images ORDER BY id ASC').all();
-    const ids = rows.map(r => r.id);
+    const rows = db.prepare("SELECT id FROM images ORDER BY id ASC").all();
+    const ids = rows.map((r) => r.id);
     // IDs should be strictly increasing
     for (let i = 1; i < ids.length; i++) {
       assert.ok(ids[i] > ids[i - 1]);
     }
-    assert.equal(db.prepare('SELECT COUNT(*) as n FROM images').get().n, before + 2);
+    assert.equal(db.prepare("SELECT COUNT(*) as n FROM images").get().n, before + 2);
   });
 
-  test('delete removes a row', () => {
+  test("delete removes a row", () => {
     const stmt = db.prepare(`
       INSERT INTO images (mime_type, iv_image, image_data, iv_thumb, thumb_data, auth_tag_image, auth_tag_thumb)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
     const b = Buffer.alloc(1);
-    const { lastInsertRowid } = stmt.run('image/gif', b, b, b, b, b, b);
+    const { lastInsertRowid } = stmt.run("image/gif", b, b, b, b, b, b);
 
-    db.prepare('DELETE FROM images WHERE id = ?').run(lastInsertRowid);
-    const row = db.prepare('SELECT * FROM images WHERE id = ?').get(lastInsertRowid);
+    db.prepare("DELETE FROM images WHERE id = ?").run(lastInsertRowid);
+    const row = db.prepare("SELECT * FROM images WHERE id = ?").get(lastInsertRowid);
     assert.equal(row, undefined);
   });
 
-  test('db file is created on disk when module is loaded', () => {
-    const dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/photosink.db');
-    assert.ok(fs.existsSync(dbPath), 'db file should exist after module load');
+  test("db file is created on disk when module is loaded", () => {
+    const dbPath = process.env.DB_PATH || path.join(__dirname, "../../data/photosink.db");
+    assert.ok(fs.existsSync(dbPath), "db file should exist after module load");
   });
 });

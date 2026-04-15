@@ -1,12 +1,12 @@
-const express = require('express');
-const multer = require('multer');
-const { encrypt } = require('../crypto');
-const { generateThumbnail } = require('../thumbnail');
-const { stmts } = require('../db');
+const express = require("express");
+const multer = require("multer");
+const { encrypt } = require("../crypto");
+const { generateThumbnail } = require("../thumbnail");
+const { stmts } = require("../db");
 
 const router = express.Router();
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/avif"];
 const MAX_UPLOAD_BYTES = parseInt(process.env.MAX_UPLOAD_BYTES, 10) || 2097152;
 
 const upload = multer({
@@ -16,35 +16,35 @@ const upload = multer({
     if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(Object.assign(new Error('Unsupported image type'), { code: 'INVALID_MIME' }));
+      cb(Object.assign(new Error("Unsupported image type"), { code: "INVALID_MIME" }));
     }
   },
 });
 
-router.get('/', (req, res) => {
-  const success = req.query.success === '1' ? true : null;
+router.get("/", (req, res) => {
+  const success = req.query.success === "1" ? true : null;
   const error = req.query.error ? decodeURIComponent(req.query.error) : null;
-  res.render('upload', { success, error });
+  res.render("upload", { success, error });
 });
 
-router.post('/upload/file', (req, res) => {
-  upload.single('image')(req, res, async (err) => {
+router.post("/upload/file", (req, res) => {
+  upload.single("image")(req, res, async (err) => {
     if (err) {
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.redirect('/?error=File+too+large');
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.redirect("/?error=File+too+large");
       }
-      if (err.code === 'INVALID_MIME') {
-        return res.redirect('/?error=Unsupported+image+type');
+      if (err.code === "INVALID_MIME") {
+        return res.redirect("/?error=Unsupported+image+type");
       }
-      return res.redirect('/?error=Upload+failed');
+      return res.redirect("/?error=Upload+failed");
     }
 
     if (!req.file) {
-      return res.redirect('/?error=Upload+failed');
+      return res.redirect("/?error=Upload+failed");
     }
 
     if (!ALLOWED_MIME_TYPES.includes(req.file.mimetype)) {
-      return res.redirect('/?error=Unsupported+image+type');
+      return res.redirect("/?error=Unsupported+image+type");
     }
 
     try {
@@ -62,18 +62,18 @@ router.post('/upload/file', (req, res) => {
         auth_tag_thumb: encThumb.authTag,
       });
 
-      return res.redirect('/?success=1');
+      return res.redirect("/?success=1");
     } catch (_) {
-      return res.redirect('/?error=Upload+failed');
+      return res.redirect("/?error=Upload+failed");
     }
   });
 });
 
-router.post('/upload/url', async (req, res) => {
+router.post("/upload/url", async (req, res) => {
   const { url } = req.body;
 
   if (!url || !/^https?:\/\//i.test(url)) {
-    return res.redirect('/?error=Invalid+URL');
+    return res.redirect("/?error=Invalid+URL");
   }
 
   const controller = new AbortController();
@@ -84,18 +84,18 @@ router.post('/upload/url', async (req, res) => {
     clearTimeout(timeout);
 
     if (!response.ok) {
-      return res.redirect('/?error=Could+not+fetch+image');
+      return res.redirect("/?error=Could+not+fetch+image");
     }
 
-    const contentLength = response.headers.get('content-length');
+    const contentLength = response.headers.get("content-length");
     if (contentLength && parseInt(contentLength, 10) > MAX_UPLOAD_BYTES) {
-      return res.redirect('/?error=File+too+large');
+      return res.redirect("/?error=File+too+large");
     }
 
-    const contentType = response.headers.get('content-type') || '';
-    const mime = contentType.split(';')[0].trim();
+    const contentType = response.headers.get("content-type") || "";
+    const mime = contentType.split(";")[0].trim();
     if (!ALLOWED_MIME_TYPES.includes(mime)) {
-      return res.redirect('/?error=Unsupported+image+type');
+      return res.redirect("/?error=Unsupported+image+type");
     }
 
     // Stream body into buffer while checking size
@@ -109,12 +109,12 @@ router.post('/upload/url', async (req, res) => {
       totalBytes += value.byteLength;
       if (totalBytes > MAX_UPLOAD_BYTES) {
         reader.cancel();
-        return res.redirect('/?error=File+too+large');
+        return res.redirect("/?error=File+too+large");
       }
       chunks.push(value);
     }
 
-    const imageBuffer = Buffer.concat(chunks.map(c => Buffer.from(c)));
+    const imageBuffer = Buffer.concat(chunks.map((c) => Buffer.from(c)));
 
     const thumbBuffer = await generateThumbnail(imageBuffer);
     const encImage = encrypt(imageBuffer);
@@ -130,13 +130,13 @@ router.post('/upload/url', async (req, res) => {
       auth_tag_thumb: encThumb.authTag,
     });
 
-    return res.redirect('/?success=1');
+    return res.redirect("/?success=1");
   } catch (err) {
     clearTimeout(timeout);
-    if (err.name === 'AbortError') {
-      return res.redirect('/?error=Could+not+fetch+image');
+    if (err.name === "AbortError") {
+      return res.redirect("/?error=Could+not+fetch+image");
     }
-    return res.redirect('/?error=Could+not+fetch+image');
+    return res.redirect("/?error=Could+not+fetch+image");
   }
 });
 

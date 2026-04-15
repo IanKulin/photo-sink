@@ -1,10 +1,10 @@
-const express = require('express');
-const { stmts } = require('../db');
-const { decrypt } = require('../crypto');
+const express = require("express");
+const { stmts } = require("../db");
+const { decrypt } = require("../crypto");
 
 const router = express.Router();
 
-router.get('/gallery', (req, res) => {
+router.get("/gallery", (req, res) => {
   try {
     const rows = stmts.getAll.all();
     const images = rows.map((row) => {
@@ -13,12 +13,12 @@ router.get('/gallery', (req, res) => {
         ciphertext: row.thumb_data,
         authTag: row.auth_tag_thumb,
       });
-      const thumbDataUri = `data:image/jpeg;base64,${thumbBuffer.toString('base64')}`;
+      const thumbDataUri = `data:image/jpeg;base64,${thumbBuffer.toString("base64")}`;
       return { id: row.id, created_at: row.created_at, thumbDataUri };
     });
-    res.render('gallery', { images });
+    res.render("gallery", { images });
   } catch (_) {
-    res.status(500).render('error', { message: 'Failed to load gallery.' });
+    res.status(500).render("error", { message: "Failed to load gallery." });
   }
 });
 

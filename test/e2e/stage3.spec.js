@@ -1,78 +1,86 @@
-const { test, expect } = require('@playwright/test');
-const path = require('path');
-const fs = require('fs');
-const Database = require('better-sqlite3');
+const { test, expect } = require("@playwright/test");
+const path = require("path");
+const fs = require("fs");
+const Database = require("better-sqlite3");
 
-const FIXTURES = path.join(__dirname, '../fixtures');
+const FIXTURES = path.join(__dirname, "../fixtures");
 
-test.describe('Stage 3 — File Upload & Encryption Pipeline', () => {
-  test.describe('POST /upload/file', () => {
-    test('upload a JPEG → redirects to /?success=1', async ({ page }) => {
-      await page.goto('/');
-      const [response] = await Promise.all([
-        page.waitForURL('/?success=1'),
-        page.locator('input[type="file"][name="image"]').setInputFiles(path.join(FIXTURES, 'red.jpg')),
+test.describe("Stage 3 — File Upload & Encryption Pipeline", () => {
+  test.describe("POST /upload/file", () => {
+    test("upload a JPEG → redirects to /?success=1", async ({ page }) => {
+      await page.goto("/");
+      await Promise.all([
+        page.waitForURL("/?success=1"),
+        page
+          .locator('input[type="file"][name="image"]')
+          .setInputFiles(path.join(FIXTURES, "red.jpg")),
         page.locator('form[action="/upload/file"] button[type="submit"]').click(),
       ]);
-      await expect(page.locator('.banner--success')).toBeVisible();
+      await expect(page.locator(".banner--success")).toBeVisible();
     });
 
-    test('upload a PNG → redirects to /?success=1', async ({ page }) => {
-      await page.goto('/');
-      await page.locator('input[type="file"][name="image"]').setInputFiles(path.join(FIXTURES, 'green.png'));
+    test("upload a PNG → redirects to /?success=1", async ({ page }) => {
+      await page.goto("/");
+      await page
+        .locator('input[type="file"][name="image"]')
+        .setInputFiles(path.join(FIXTURES, "green.png"));
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
-      await page.waitForURL('/?success=1');
-      await expect(page.locator('.banner--success')).toBeVisible();
+      await page.waitForURL("/?success=1");
+      await expect(page.locator(".banner--success")).toBeVisible();
     });
 
-    test('upload a WebP → redirects to /?success=1', async ({ page }) => {
-      await page.goto('/');
-      await page.locator('input[type="file"][name="image"]').setInputFiles(path.join(FIXTURES, 'blue.webp'));
+    test("upload a WebP → redirects to /?success=1", async ({ page }) => {
+      await page.goto("/");
+      await page
+        .locator('input[type="file"][name="image"]')
+        .setInputFiles(path.join(FIXTURES, "blue.webp"));
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
-      await page.waitForURL('/?success=1');
-      await expect(page.locator('.banner--success')).toBeVisible();
+      await page.waitForURL("/?success=1");
+      await expect(page.locator(".banner--success")).toBeVisible();
     });
 
-    test('upload a .txt file → /?error=Unsupported+image+type', async ({ page }) => {
-      const txtFile = path.join(FIXTURES, 'dummy.txt');
-      fs.writeFileSync(txtFile, 'not an image');
-      await page.goto('/');
+    test("upload a .txt file → /?error=Unsupported+image+type", async ({ page }) => {
+      const txtFile = path.join(FIXTURES, "dummy.txt");
+      fs.writeFileSync(txtFile, "not an image");
+      await page.goto("/");
       await page.locator('input[type="file"][name="image"]').setInputFiles({
-        name: 'dummy.txt',
-        mimeType: 'text/plain',
-        buffer: Buffer.from('not an image'),
+        name: "dummy.txt",
+        mimeType: "text/plain",
+        buffer: Buffer.from("not an image"),
       });
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
       await page.waitForURL(/error=/);
-      await expect(page.locator('.banner--error')).toContainText('Unsupported image type');
+      await expect(page.locator(".banner--error")).toContainText("Unsupported image type");
     });
 
-    test('upload a file >2 MB → /?error=File+too+large', async ({ page }) => {
+    test("upload a file >2 MB → /?error=File+too+large", async ({ page }) => {
       // Generate a buffer just over 2 MB
       const oversize = Buffer.alloc(2 * 1024 * 1024 + 1, 0xff);
-      await page.goto('/');
+      await page.goto("/");
       await page.locator('input[type="file"][name="image"]').setInputFiles({
-        name: 'big.jpg',
-        mimeType: 'image/jpeg',
+        name: "big.jpg",
+        mimeType: "image/jpeg",
         buffer: oversize,
       });
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
       await page.waitForURL(/error=/);
-      await expect(page.locator('.banner--error')).toContainText('File too large');
+      await expect(page.locator(".banner--error")).toContainText("File too large");
     });
 
-    test('successful upload inserts a row with non-null BLOB fields', async ({ page }) => {
-      await page.goto('/');
-      await page.locator('input[type="file"][name="image"]').setInputFiles(path.join(FIXTURES, 'red.jpg'));
+    test("successful upload inserts a row with non-null BLOB fields", async ({ page }) => {
+      await page.goto("/");
+      await page
+        .locator('input[type="file"][name="image"]')
+        .setInputFiles(path.join(FIXTURES, "red.jpg"));
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
-      await page.waitForURL('/?success=1');
+      await page.waitForURL("/?success=1");
 
       const db = new Database(process.env.DB_PATH, { readonly: true });
-      const row = db.prepare('SELECT * FROM images ORDER BY id DESC LIMIT 1').get();
+      const row = db.prepare("SELECT * FROM images ORDER BY id DESC LIMIT 1").get();
       db.close();
 
       expect(row).toBeTruthy();
-      expect(row.mime_type).toBe('image/jpeg');
+      expect(row.mime_type).toBe("image/jpeg");
       expect(row.iv_image.length).toBeGreaterThan(0);
       expect(row.image_data.length).toBeGreaterThan(0);
       expect(row.auth_tag_image.length).toBeGreaterThan(0);
@@ -81,45 +89,47 @@ test.describe('Stage 3 — File Upload & Encryption Pipeline', () => {
       expect(row.auth_tag_thumb.length).toBeGreaterThan(0);
     });
 
-    test('image and thumb are encrypted with separate IVs', async ({ page }) => {
-      await page.goto('/');
-      await page.locator('input[type="file"][name="image"]').setInputFiles(path.join(FIXTURES, 'red.jpg'));
+    test("image and thumb are encrypted with separate IVs", async ({ page }) => {
+      await page.goto("/");
+      await page
+        .locator('input[type="file"][name="image"]')
+        .setInputFiles(path.join(FIXTURES, "red.jpg"));
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
-      await page.waitForURL('/?success=1');
+      await page.waitForURL("/?success=1");
 
       const db = new Database(process.env.DB_PATH, { readonly: true });
-      const row = db.prepare('SELECT * FROM images ORDER BY id DESC LIMIT 1').get();
+      const row = db.prepare("SELECT * FROM images ORDER BY id DESC LIMIT 1").get();
       db.close();
 
       // IVs should be different (separate encrypt() calls)
-      expect(Buffer.from(row.iv_image).toString('hex')).not.toBe(
-        Buffer.from(row.iv_thumb).toString('hex')
+      expect(Buffer.from(row.iv_image).toString("hex")).not.toBe(
+        Buffer.from(row.iv_thumb).toString("hex")
       );
     });
   });
 
-  test.describe('POST /upload/url', () => {
-    test('malformed URL (no scheme) → /?error=Invalid+URL', async ({ page }) => {
-      await page.goto('/');
-      await page.locator('input[name="url"]').fill('not-a-url');
+  test.describe("POST /upload/url", () => {
+    test("malformed URL (no scheme) → /?error=Invalid+URL", async ({ page }) => {
+      await page.goto("/");
+      await page.locator('input[name="url"]').fill("not-a-url");
       await page.locator('form[action="/upload/url"] button[type="submit"]').click();
       await page.waitForURL(/error=/);
-      await expect(page.locator('.banner--error')).toContainText('Invalid URL');
+      await expect(page.locator(".banner--error")).toContainText("Invalid URL");
     });
 
-    test('empty URL → /?error=Invalid+URL', async ({ page }) => {
-      await page.goto('/');
+    test("empty URL → /?error=Invalid+URL", async ({ page }) => {
+      await page.goto("/");
       await page.locator('form[action="/upload/url"] button[type="submit"]').click();
       await page.waitForURL(/error=/);
-      await expect(page.locator('.banner--error')).toContainText('Invalid URL');
+      await expect(page.locator(".banner--error")).toContainText("Invalid URL");
     });
 
-    test('URL with ftp:// scheme → /?error=Invalid+URL', async ({ page }) => {
-      await page.goto('/');
-      await page.locator('input[name="url"]').fill('ftp://example.com/image.jpg');
+    test("URL with ftp:// scheme → /?error=Invalid+URL", async ({ page }) => {
+      await page.goto("/");
+      await page.locator('input[name="url"]').fill("ftp://example.com/image.jpg");
       await page.locator('form[action="/upload/url"] button[type="submit"]').click();
       await page.waitForURL(/error=/);
-      await expect(page.locator('.banner--error')).toContainText('Invalid URL');
+      await expect(page.locator(".banner--error")).toContainText("Invalid URL");
     });
   });
 });

@@ -1,13 +1,13 @@
-const Database = require('better-sqlite3');
-const path = require('path');
-const fs = require('fs');
+const Database = require("better-sqlite3");
+const path = require("path");
+const fs = require("fs");
 
-const dbDir = path.join(__dirname, '..', 'data');
+const dbDir = path.join(__dirname, "..", "data");
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 
-const dbPath = process.env.DB_PATH || path.join(dbDir, 'photosink.db');
+const dbPath = process.env.DB_PATH || path.join(dbDir, "photosink.db");
 const db = new Database(dbPath);
 
 db.exec(`
@@ -29,9 +29,11 @@ const stmts = {
     INSERT INTO images (mime_type, iv_image, image_data, iv_thumb, thumb_data, auth_tag_image, auth_tag_thumb)
     VALUES (@mime_type, @iv_image, @image_data, @iv_thumb, @thumb_data, @auth_tag_image, @auth_tag_thumb)
   `),
-  getAll: db.prepare('SELECT id, created_at, iv_thumb, thumb_data, auth_tag_thumb FROM images ORDER BY created_at ASC'),
-  getById: db.prepare('SELECT * FROM images WHERE id = ?'),
-  deleteById: db.prepare('DELETE FROM images WHERE id = ?'),
+  getAll: db.prepare(
+    "SELECT id, created_at, iv_thumb, thumb_data, auth_tag_thumb FROM images ORDER BY created_at ASC"
+  ),
+  getById: db.prepare("SELECT * FROM images WHERE id = ?"),
+  deleteById: db.prepare("DELETE FROM images WHERE id = ?"),
 };
 
 module.exports = { db, stmts };
