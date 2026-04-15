@@ -45,13 +45,13 @@ test.describe("Stage 4 — Gallery Page", () => {
     await expect(cards.first()).toBeVisible();
   });
 
-  test("gallery thumbnail images have a valid src (data URI)", async ({ page }) => {
+  test("gallery thumbnail images have a valid src (thumb URL)", async ({ page }) => {
     await uploadImage(page, "green.png");
     await page.goto("/gallery");
     const firstImg = page.locator(".gallery-card img").first();
     await expect(firstImg).toBeVisible();
     const src = await firstImg.getAttribute("src");
-    expect(src).toMatch(/^data:image\/jpeg;base64,/);
+    expect(src).toMatch(/^\/image\/\d+\/thumb\.jpg$/);
   });
 
   test("each gallery card shows an upload date", async ({ page }) => {
@@ -106,7 +106,7 @@ test.describe("Stage 4 — Gallery Page", () => {
     }
   });
 
-  test("corrupted auth tag causes 500 error page", async ({ page }) => {
+  test("corrupted auth tag causes 500 on thumbnail route", async ({ page, request }) => {
     // Upload an image so there is at least one row
     await uploadImage(page, "red.jpg");
 
@@ -119,7 +119,7 @@ test.describe("Stage 4 — Gallery Page", () => {
     );
     db.close();
 
-    const res = await page.goto("/gallery");
+    const res = await request.get(`/image/${row.id}/thumb.jpg`);
     expect(res.status()).toBe(500);
 
     // Restore: delete the corrupted row so other tests aren't affected

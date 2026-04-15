@@ -42,6 +42,23 @@ router.get("/image/:id", (req, res) => {
   });
 });
 
+router.get("/image/:id/thumb.jpg", (req, res) => {
+  const row = stmts.getById.get(req.params.id);
+  if (!row) return res.status(404).render("error", { message: "Image not found." });
+  try {
+    const thumbBuffer = decrypt({
+      iv: row.iv_thumb,
+      ciphertext: row.thumb_data,
+      authTag: row.auth_tag_thumb,
+    });
+    res.set("Content-Type", "image/jpeg");
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
+    return res.send(thumbBuffer);
+  } catch (_) {
+    return res.status(500).render("error", { message: "Failed to load thumbnail." });
+  }
+});
+
 router.get("/image/:id/download", (req, res) => {
   const row = stmts.getById.get(req.params.id);
   if (!row) {
