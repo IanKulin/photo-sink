@@ -35,7 +35,6 @@ app.use((_req, res) => {
 });
 
 // 500 handler
-// eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).render('error', { message: 'An unexpected error occurred.' });
