@@ -1,5 +1,5 @@
 const { encrypt, decrypt } = require("./crypto");
-const { stmts, insertRaw } = require("./db");
+const { insertRaw, getById } = require("./db");
 const { generateThumbnail } = require("./thumbnail");
 
 function saveImage(mime, imageBuffer, thumbBuffer) {
@@ -9,7 +9,7 @@ function saveImage(mime, imageBuffer, thumbBuffer) {
 }
 
 function getImage(id) {
-  const row = stmts.getById.get(id);
+  const row = getById(id);
   if (!row) return null;
   const imageBuffer = decrypt({
     iv: row.iv_image,
@@ -20,7 +20,7 @@ function getImage(id) {
 }
 
 function getThumb(id) {
-  const row = stmts.getById.get(id);
+  const row = getById(id);
   if (!row) return null;
   const thumbBuffer = decrypt({
     iv: row.iv_thumb,

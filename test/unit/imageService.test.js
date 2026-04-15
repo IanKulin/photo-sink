@@ -8,7 +8,7 @@ process.env.ENCRYPTION_KEY = "a".repeat(64);
 process.env.DB_PATH = ":memory:";
 
 const { saveImage, getImage, getThumb, storeUpload } = require("../../src/imageService");
-const { stmts } = require("../../src/db");
+const { testHelpers } = require("../../src/db");
 
 describe("imageService", () => {
   test("saveImage encrypts data before storing", () => {
@@ -19,7 +19,7 @@ describe("imageService", () => {
     const info = saveImage(mime, imageBuffer, thumbBuffer);
     assert.ok(info.lastInsertRowid > 0);
 
-    const row = stmts.getById.get(info.lastInsertRowid);
+    const row = testHelpers.getRawById(info.lastInsertRowid);
     assert.ok(
       !Buffer.from(row.image_data).equals(imageBuffer),
       "stored image_data should differ from plaintext"

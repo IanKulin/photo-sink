@@ -1,5 +1,5 @@
 const express = require("express");
-const { stmts } = require("../db");
+const { getById, deleteById } = require("../db");
 const { getImage, getThumb } = require("../imageService");
 const logger = require("../logger");
 
@@ -29,7 +29,7 @@ router.get("/image/:id.:ext", (req, res) => {
 });
 
 router.get("/image/:id", (req, res) => {
-  const row = stmts.getById.get(req.params.id);
+  const row = getById(req.params.id);
   if (!row) {
     logger.warn("Image not found: id=%s", req.params.id);
     return res.status(404).render("error", { message: "Image not found." });
@@ -77,7 +77,7 @@ router.get("/image/:id/download", (req, res) => {
 });
 
 router.post("/image/:id/delete", (req, res) => {
-  stmts.deleteById.run(req.params.id);
+  deleteById(req.params.id);
   return res.redirect("/gallery");
 });
 

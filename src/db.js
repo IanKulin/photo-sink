@@ -52,4 +52,20 @@ function deleteManyById(ids) {
   db.prepare(`DELETE FROM images WHERE id IN (${placeholders})`).run(...ids);
 }
 
-module.exports = { db, stmts, insertRaw, deleteManyById };
+function getAllImages() {
+  return stmts.getAll.all();
+}
+
+function getById(id) {
+  return stmts.getById.get(id);
+}
+
+function deleteById(id) {
+  return stmts.deleteById.run(id);
+}
+
+const testHelpers = {
+  getRawById: (id) => stmts.getById.get(id),
+};
+
+module.exports = { insertRaw, deleteManyById, getAllImages, getById, deleteById, testHelpers };

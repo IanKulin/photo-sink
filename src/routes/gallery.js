@@ -1,11 +1,11 @@
 const express = require("express");
-const { stmts, deleteManyById } = require("../db");
+const { getAllImages, deleteManyById } = require("../db");
 const logger = require("../logger");
 const router = express.Router();
 
 router.get("/gallery", (req, res) => {
   try {
-    const rows = stmts.getAll.all();
+    const rows = getAllImages();
     const images = rows.map((row) => ({ id: row.id, created_at: row.created_at }));
     res.render("gallery", { images });
   } catch (err) {
