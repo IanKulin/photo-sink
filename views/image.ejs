@@ -10,7 +10,8 @@
       </div>
       <div class="image-detail__actions">
         <a href="/image/${id}/download" download class="btn">Download</a>
-        <form method="POST" action="/image/${id}/delete" style="display:inline">
+        <a href="${imageSrc}" target="_blank" rel="noopener" class="btn">View in new tab</a>
+        <form method="POST" action="/image/${id}/delete" style="display:inline-flex">
           <button type="submit" class="btn btn--danger">Delete</button>
         </form>
       </div>
