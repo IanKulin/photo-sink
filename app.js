@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 // Validate ENCRYPTION_KEY at startup
 const key = process.env.ENCRYPTION_KEY;
 if (!key || key.length !== 64 || !/^[0-9a-fA-F]{64}$/.test(key)) {
