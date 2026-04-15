@@ -1,5 +1,6 @@
 const express = require("express");
-const { stmts, getDecryptedImage, getDecryptedThumb } = require("../db");
+const { stmts } = require("../db");
+const { getImage, getThumb } = require("../imageService");
 const logger = require("../logger");
 
 const router = express.Router();
@@ -14,7 +15,7 @@ const MIME_TO_EXT = {
 
 router.get("/image/:id.:ext", (req, res) => {
   try {
-    const result = getDecryptedImage(req.params.id);
+    const result = getImage(req.params.id);
     if (!result) {
       logger.warn("Image not found: id=%s", req.params.id);
       return res.status(404).render("error", { message: "Image not found." });
@@ -44,7 +45,7 @@ router.get("/image/:id", (req, res) => {
 
 router.get("/image/:id/thumb.jpg", (req, res) => {
   try {
-    const result = getDecryptedThumb(req.params.id);
+    const result = getThumb(req.params.id);
     if (!result) {
       logger.warn("Thumbnail not found: id=%s", req.params.id);
       return res.status(404).render("error", { message: "Image not found." });
@@ -60,7 +61,7 @@ router.get("/image/:id/thumb.jpg", (req, res) => {
 
 router.get("/image/:id/download", (req, res) => {
   try {
-    const result = getDecryptedImage(req.params.id);
+    const result = getImage(req.params.id);
     if (!result) {
       logger.warn("Download not found: id=%s", req.params.id);
       return res.status(404).render("error", { message: "Image not found." });
