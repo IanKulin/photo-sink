@@ -11,9 +11,19 @@
       <div class="image-detail__actions">
         <a href="/image/${id}/download" download class="btn">Download</a>
         <a href="${imageSrc}" target="_blank" rel="noopener" class="btn">View in new tab</a>
-        <form method="POST" action="/image/${id}/delete" style="display:inline-flex">
-          <button type="submit" class="btn btn--danger">Delete</button>
-        </form>
+        <a href="#confirm-delete" class="btn btn--danger">Delete</a>
+      </div>
+    </div>
+
+    <div id="confirm-delete" class="modal-backdrop">
+      <div class="modal">
+        <p>Delete this image? This cannot be undone.</p>
+        <div class="modal__actions">
+          <a href="#" class="btn">Cancel</a>
+          <form method="POST" action="/image/${id}/delete" style="display:inline-flex">
+            <button type="submit" class="btn btn--danger">Delete</button>
+          </form>
+        </div>
       </div>
     </div>
   `;

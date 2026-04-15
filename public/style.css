@@ -243,6 +243,38 @@ main {
   background: #b91c1c;
 }
 
+/* ── Modal ── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-backdrop:target {
+  display: flex;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: 0.5rem;
+  padding: 1.5rem 2rem;
+  max-width: 20rem;
+  text-align: center;
+}
+
+.modal p {
+  margin: 0 0 1.25rem;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
 /* ── Gallery grid ── */
 .gallery-grid {
   display: grid;
