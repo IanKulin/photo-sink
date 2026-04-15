@@ -108,6 +108,7 @@ describe("database module", () => {
   });
 
   test("db file is created on disk when module is loaded", () => {
+    require("../../src/db");
     const dbPath = process.env.DB_PATH || path.join(__dirname, "../../data/photosink.db");
     assert.ok(fs.existsSync(dbPath), "db file should exist after module load");
   });
