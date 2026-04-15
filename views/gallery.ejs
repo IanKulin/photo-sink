@@ -1,16 +1,16 @@
-<%
-  const layoutBody = `
-    ${images.length === 0
-      ? '<p class="gallery-empty">No images yet. <a href="/">Upload one!</a></p>'
-      : `<div class="gallery-grid">
-          ${images.map(img => `
-            <a class="gallery-card" href="/image/${img.id}">
-              <img src="/image/${img.id}/thumb.jpg" alt="Uploaded image ${img.id}" class="gallery-card__img">
-              <time class="gallery-card__date" datetime="${img.created_at}">${img.created_at}</time>
-            </a>
-          `).join('')}
-        </div>`
-    }
-  `;
-%>
-<%- include('layout', { body: layoutBody, page: 'gallery' }) %>
+<%- include('_header', { page: 'gallery' }) %>
+
+    <% if (images.length === 0) { %>
+    <p class="gallery-empty">No images yet. <a href="/">Upload one!</a></p>
+    <% } else { %>
+    <div class="gallery-grid">
+      <% images.forEach(function(img) { %>
+      <a class="gallery-card" href="/image/<%= img.id %>">
+        <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image <%= img.id %>" class="gallery-card__img">
+        <time class="gallery-card__date" datetime="<%= img.created_at %>"><%= img.created_at %></time>
+      </a>
+      <% }); %>
+    </div>
+    <% } %>
+
+<%- include('_footer') %>

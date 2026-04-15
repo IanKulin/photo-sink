@@ -17,15 +17,8 @@
       <a href="/" class="nav-link<%= locals.page === 'upload' ? ' nav-link--active' : '' %>">Upload</a>
       <a href="/gallery" class="nav-link<%= locals.page === 'gallery' ? ' nav-link--active' : '' %>">Gallery</a>
     </nav>
-    <% if (locals.headerActions) { %>
-    <div class="header-actions"><%- locals.headerActions %></div>
+    <% if (locals.actionsPartial) { %>
+    <div class="header-actions"><%- include(locals.actionsPartial) %></div>
     <% } %>
   </header>
   <main>
-    <%- body %>
-  </main>
-  <footer class="site-footer">
-    <span>photo-sink v <%= version %></span>
-  </footer>
-</body>
-</html>

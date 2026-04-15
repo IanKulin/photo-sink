@@ -1,10 +1,9 @@
-<%
-  const layoutBody = `
+<%- include('_header') %>
+
     <div class="card">
       <h1>Something went wrong</h1>
-      <p class="banner banner--error" role="alert">${locals.message || 'An unexpected error occurred.'}</p>
+      <p class="banner banner--error" role="alert"><%= locals.message || 'An unexpected error occurred.' %></p>
       <a href="/">Go home</a>
     </div>
-  `;
-%>
-<%- include('layout', { body: layoutBody }) %>
+
+<%- include('_footer') %>

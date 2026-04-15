@@ -1,10 +1,14 @@
-<%
-  const layoutBody = `
+<%- include('_header', { page: 'upload' }) %>
+
     <div class="card">
       <h1 class="card__title">Upload an Image</h1>
 
-      ${locals.success ? '<div class="banner banner--success" role="alert">Image uploaded successfully.</div>' : ''}
-      ${locals.error ? `<div class="banner banner--error" role="alert">${locals.error}</div>` : ''}
+      <% if (locals.success) { %>
+      <div class="banner banner--success" role="alert">Image uploaded successfully.</div>
+      <% } %>
+      <% if (locals.error) { %>
+      <div class="banner banner--error" role="alert"><%= locals.error %></div>
+      <% } %>
 
       <section class="upload-section">
         <form method="POST" action="/upload/file" enctype="multipart/form-data">
@@ -26,9 +30,8 @@
         </form>
       </section>
     </div>
-  `;
-%>
-<%- include('layout', { body: layoutBody, page: 'upload' }) %>
+
+<%- include('_footer') %>
 
 <script>
 (function () {

@@ -1,13 +1,7 @@
-<%
-  const headerActions = `
-    <a href="/image/${id}/download" download class="btn">Download</a>
-    <a href="${imageSrc}" target="_blank" rel="noopener" class="btn">View in new tab</a>
-    <a href="#confirm-delete" class="btn btn--danger">Delete</a>
-  `;
+<%- include('_header', { actionsPartial: '_image-actions' }) %>
 
-  const layoutBody = `
     <div class="image-detail">
-      <img src="${imageSrc}" alt="Uploaded image ${id}" class="image-detail__img">
+      <img src="<%= imageSrc %>" alt="Uploaded image <%= id %>" class="image-detail__img">
     </div>
 
     <div id="confirm-delete" class="modal-backdrop">
@@ -15,12 +9,11 @@
         <p class="modal__body">Delete this image? This cannot be undone.</p>
         <div class="modal__actions">
           <a href="#" class="btn">Cancel</a>
-          <form method="POST" action="/image/${id}/delete" class="modal__form">
+          <form method="POST" action="/image/<%= id %>/delete" class="modal__form">
             <button type="submit" class="btn btn--danger">Delete</button>
           </form>
         </div>
       </div>
     </div>
-  `;
-%>
-<%- include('layout', { body: layoutBody, headerActions }) %>
+
+<%- include('_footer') %>
