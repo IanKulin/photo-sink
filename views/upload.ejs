@@ -25,7 +25,7 @@
         <form method="POST" action="/upload/url">
           <div class="url-row">
             <input type="text" name="url" placeholder="https://…" class="url-input" id="url-input">
-            <button type="submit" class="btn" id="fetch-btn" disabled>Fetch</button>
+            <button type="submit" class="btn" id="fetch-btn">Fetch</button>
           </div>
         </form>
       </section>
@@ -64,15 +64,5 @@
     uploadBtn.disabled = input.files.length === 0;
   });
 
-  const urlInput = document.getElementById('url-input');
-  const fetchBtn = document.getElementById('fetch-btn');
-  urlInput.addEventListener('input', function () {
-    try {
-      const u = new URL(urlInput.value);
-      fetchBtn.disabled = u.protocol !== 'http:' && u.protocol !== 'https:';
-    } catch {
-      fetchBtn.disabled = true;
-    }
-  });
 }());
 </script>
