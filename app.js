@@ -25,8 +25,8 @@ const uploadRouter = require("./src/routes/upload");
 const galleryRouter = require("./src/routes/gallery");
 const imageRouter = require("./src/routes/image");
 app.use("/", uploadRouter);
-app.use("/", galleryRouter);
-app.use("/", imageRouter);
+app.use("/gallery", galleryRouter);
+app.use("/image", imageRouter);
 
 // 404 handler
 app.use((_req, res) => {

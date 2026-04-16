@@ -3,7 +3,7 @@ const { getAllImages, deleteManyById } = require("../db");
 const logger = require("../logger");
 const router = express.Router();
 
-router.get("/gallery", (req, res) => {
+router.get("/", (req, res) => {
   try {
     const rows = getAllImages();
     const images = rows.map((row) => ({ id: row.id, created_at: row.created_at }));
@@ -14,7 +14,7 @@ router.get("/gallery", (req, res) => {
   }
 });
 
-router.post("/gallery/delete", (req, res) => {
+router.post("/delete", (req, res) => {
   const raw = [].concat(req.body?.ids ?? []);
   if (raw.length === 0) {
     return res.redirect("/gallery");

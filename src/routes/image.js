@@ -13,7 +13,7 @@ const MIME_TO_EXT = {
   "image/avif": "avif",
 };
 
-router.get("/image/:id.:ext", (req, res) => {
+router.get("/:id.:ext", (req, res) => {
   try {
     const result = getImage(req.params.id);
     if (!result) {
@@ -28,7 +28,7 @@ router.get("/image/:id.:ext", (req, res) => {
   }
 });
 
-router.get("/image/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   const row = getById(req.params.id);
   if (!row) {
     logger.warn("Image not found: id=%s", req.params.id);
@@ -43,7 +43,7 @@ router.get("/image/:id", (req, res) => {
   });
 });
 
-router.get("/image/:id/thumb.jpg", (req, res) => {
+router.get("/:id/thumb.jpg", (req, res) => {
   try {
     const result = getThumb(req.params.id);
     if (!result) {
@@ -59,7 +59,7 @@ router.get("/image/:id/thumb.jpg", (req, res) => {
   }
 });
 
-router.get("/image/:id/download", (req, res) => {
+router.get("/:id/download", (req, res) => {
   try {
     const result = getImage(req.params.id);
     if (!result) {
@@ -76,7 +76,7 @@ router.get("/image/:id/download", (req, res) => {
   }
 });
 
-router.post("/image/:id/delete", (req, res) => {
+router.post("/:id/delete", (req, res) => {
   deleteById(req.params.id);
   return res.redirect("/gallery");
 });
