@@ -22,8 +22,7 @@ const upload = multer({
 
 router.get("/", (req, res) => {
   const success = req.query.success === "1" ? true : null;
-  const error = req.query.error ? decodeURIComponent(req.query.error) : null;
-  res.render("upload", { success, error });
+  res.render("upload", { success, error: null });
 });
 
 router.post("/upload/file", (req, res) => {
@@ -31,24 +30,24 @@ router.post("/upload/file", (req, res) => {
     if (err) {
       if (err.code === "LIMIT_FILE_SIZE") {
         logger.warn("File upload rejected: file too large");
-        return res.redirect("/?error=File+too+large");
+        return res.status(400).render("upload", { error: "File too large", success: null });
       }
       if (err.code === "INVALID_MIME") {
         logger.warn("File upload rejected: unsupported MIME type");
-        return res.redirect("/?error=Unsupported+image+type");
+        return res.status(400).render("upload", { error: "Unsupported image type", success: null });
       }
       logger.warn("File upload failed: %s", err.message);
-      return res.redirect("/?error=Upload+failed");
+      return res.status(400).render("upload", { error: "Upload failed", success: null });
     }
 
     if (!req.file) {
       logger.warn("File upload rejected: no file received");
-      return res.redirect("/?error=Upload+failed");
+      return res.status(400).render("upload", { error: "Upload failed", success: null });
     }
 
     if (!ALLOWED_MIME_TYPES.includes(req.file.mimetype)) {
       logger.warn("File upload rejected: unsupported MIME type %s", req.file.mimetype);
-      return res.redirect("/?error=Unsupported+image+type");
+      return res.status(400).render("upload", { error: "Unsupported image type", success: null });
     }
 
     try {
@@ -58,7 +57,7 @@ router.post("/upload/file", (req, res) => {
       return res.redirect("/?success=1");
     } catch (uploadErr) {
       logger.error("File upload processing failed: %s", uploadErr.message);
-      return res.redirect("/?error=Upload+failed");
+      return res.status(400).render("upload", { error: "Upload failed", success: null });
     }
   });
 });
@@ -68,7 +67,7 @@ router.post("/upload/url", async (req, res) => {
 
   if (!url || !/^https?:\/\//i.test(url)) {
     logger.warn("URL upload rejected: invalid URL");
-    return res.redirect("/?error=Invalid+URL");
+    return res.status(400).render("upload", { error: "Invalid URL", success: null });
   }
 
   const controller = new AbortController();
@@ -80,20 +79,20 @@ router.post("/upload/url", async (req, res) => {
 
     if (!response.ok) {
       logger.warn("URL upload failed: HTTP %d from remote", response.status);
-      return res.redirect("/?error=Could+not+fetch+image");
+      return res.status(400).render("upload", { error: "Could not fetch image", success: null });
     }
 
     const contentLength = response.headers.get("content-length");
     if (contentLength && parseInt(contentLength, 10) > MAX_UPLOAD_BYTES) {
       logger.warn("URL upload rejected: remote content-length exceeds limit");
-      return res.redirect("/?error=File+too+large");
+      return res.status(400).render("upload", { error: "File too large", success: null });
     }
 
     const contentType = response.headers.get("content-type") || "";
     const mime = contentType.split(";")[0].trim();
     if (!ALLOWED_MIME_TYPES.includes(mime)) {
       logger.warn("URL upload rejected: unsupported MIME type %s", mime);
-      return res.redirect("/?error=Unsupported+image+type");
+      return res.status(400).render("upload", { error: "Unsupported image type", success: null });
     }
 
     // Stream body into buffer while checking size
@@ -107,7 +106,7 @@ router.post("/upload/url", async (req, res) => {
       totalBytes += value.byteLength;
       if (totalBytes > MAX_UPLOAD_BYTES) {
         reader.cancel();
-        return res.redirect("/?error=File+too+large");
+        return res.status(400).render("upload", { error: "File too large", success: null });
       }
       chunks.push(value);
     }
@@ -122,10 +121,10 @@ router.post("/upload/url", async (req, res) => {
     clearTimeout(timeout);
     if (err.name === "AbortError") {
       logger.warn("URL upload failed: request timed out");
-      return res.redirect("/?error=Could+not+fetch+image");
+      return res.status(400).render("upload", { error: "Could not fetch image", success: null });
     }
     logger.error("URL upload failed: %s", err.message);
-    return res.redirect("/?error=Could+not+fetch+image");
+    return res.status(400).render("upload", { error: "Could not fetch image", success: null });
   }
 });
 

@@ -22,15 +22,6 @@ test.describe("Stage 2 — Upload Page (UI Shell)", () => {
     await expect(banner).toBeVisible();
   });
 
-  test("?error=Something+went+wrong shows red error banner with decoded message", async ({
-    page,
-  }) => {
-    await page.goto("/?error=Something+went+wrong");
-    const banner = page.locator(".banner--error");
-    await expect(banner).toBeVisible();
-    await expect(banner).toContainText("Something went wrong");
-  });
-
   test("nav link to /gallery is present in the header", async ({ page }) => {
     await page.goto("/");
     const galleryLink = page.locator('header a[href="/gallery"]');
@@ -63,12 +54,6 @@ test.describe("Stage 2 — Upload Page (UI Shell)", () => {
     await page.goto("/");
     await expect(page.locator("#drop-zone")).toBeVisible();
     await expect(page.locator('input[name="url"]')).toBeVisible();
-  });
-
-  test("error message is URL-decoded in the banner", async ({ page }) => {
-    await page.goto("/?error=File%20too%20large");
-    const banner = page.locator(".banner--error");
-    await expect(banner).toContainText("File too large");
   });
 
   test("no banner shown when no query params", async ({ page }) => {

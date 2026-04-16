@@ -39,7 +39,7 @@ test.describe("Stage 3 — File Upload & Encryption Pipeline", () => {
       await expect(page.locator(".banner--success")).toBeVisible();
     });
 
-    test("upload a .txt file → /?error=Unsupported+image+type", async ({ page }) => {
+    test("upload a .txt file → shows Unsupported image type error", async ({ page }) => {
       const txtFile = path.join(FIXTURES, "dummy.txt");
       fs.writeFileSync(txtFile, "not an image");
       await page.goto("/");
@@ -49,11 +49,10 @@ test.describe("Stage 3 — File Upload & Encryption Pipeline", () => {
         buffer: Buffer.from("not an image"),
       });
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
-      await page.waitForURL(/error=/);
       await expect(page.locator(".banner--error")).toContainText("Unsupported image type");
     });
 
-    test("upload a file >2 MB → /?error=File+too+large", async ({ page }) => {
+    test("upload a file >2 MB → shows File too large error", async ({ page }) => {
       // Generate a buffer just over 2 MB
       const oversize = Buffer.alloc(2 * 1024 * 1024 + 1, 0xff);
       await page.goto("/");
@@ -63,7 +62,6 @@ test.describe("Stage 3 — File Upload & Encryption Pipeline", () => {
         buffer: oversize,
       });
       await page.locator('form[action="/upload/file"] button[type="submit"]').click();
-      await page.waitForURL(/error=/);
       await expect(page.locator(".banner--error")).toContainText("File too large");
     });
 
@@ -109,26 +107,23 @@ test.describe("Stage 3 — File Upload & Encryption Pipeline", () => {
   });
 
   test.describe("POST /upload/url", () => {
-    test("malformed URL (no scheme) → /?error=Invalid+URL", async ({ page }) => {
+    test("malformed URL (no scheme) → shows Invalid URL error", async ({ page }) => {
       await page.goto("/");
       await page.locator('input[name="url"]').fill("not-a-url");
       await page.locator('form[action="/upload/url"] button[type="submit"]').click();
-      await page.waitForURL(/error=/);
       await expect(page.locator(".banner--error")).toContainText("Invalid URL");
     });
 
-    test("empty URL → /?error=Invalid+URL", async ({ page }) => {
+    test("empty URL → shows Invalid URL error", async ({ page }) => {
       await page.goto("/");
       await page.locator('form[action="/upload/url"] button[type="submit"]').click();
-      await page.waitForURL(/error=/);
       await expect(page.locator(".banner--error")).toContainText("Invalid URL");
     });
 
-    test("URL with ftp:// scheme → /?error=Invalid+URL", async ({ page }) => {
+    test("URL with ftp:// scheme → shows Invalid URL error", async ({ page }) => {
       await page.goto("/");
       await page.locator('input[name="url"]').fill("ftp://example.com/image.jpg");
       await page.locator('form[action="/upload/url"] button[type="submit"]').click();
-      await page.waitForURL(/error=/);
       await expect(page.locator(".banner--error")).toContainText("Invalid URL");
     });
   });

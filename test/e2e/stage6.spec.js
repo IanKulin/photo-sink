@@ -92,9 +92,6 @@ test.describe("Stage 6 — Drag-and-Drop & Polish", () => {
 
   test("dropping a non-image file is rejected with unsupported type error", async ({ page }) => {
     await dropFile(page, "dummy.txt", "text/plain");
-    await page.waitForURL(/\?error=/, { timeout: 15_000 });
-    const url = page.url();
-    expect(url).toMatch(/error=/);
     // Should NOT be a success banner
     await expect(page.locator(".banner--success")).not.toBeVisible();
     await expect(page.locator(".banner--error")).toBeVisible();
