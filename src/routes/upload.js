@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import { storeUpload } from "../imageService.js";
 import logger from "../logger.js";
+import { assertSafeUrl, SsrfBlockedError } from "../ssrfGuard.js";
 
 const router = express.Router();
 
@@ -65,8 +66,15 @@ router.post("/upload/file", (req, res) => {
 router.post("/upload/url", async (req, res) => {
   const { url } = req.body;
 
-  if (!url || !/^https?:\/\//i.test(url)) {
-    logger.warn("URL upload rejected: invalid URL");
+  if (!url) {
+    logger.warn("URL upload rejected: no URL provided");
+    return res.status(400).render("upload", { error: "Invalid URL", success: null });
+  }
+
+  try {
+    await assertSafeUrl(url);
+  } catch (guardErr) {
+    logger.warn("URL upload rejected: %s", guardErr.message);
     return res.status(400).render("upload", { error: "Invalid URL", success: null });
   }
 
@@ -74,7 +82,7 @@ router.post("/upload/url", async (req, res) => {
   const timeout = setTimeout(() => controller.abort(), 10000);
 
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await fetch(url, { signal: controller.signal, redirect: "error" });
     clearTimeout(timeout);
 
     if (!response.ok) {
@@ -122,6 +130,10 @@ router.post("/upload/url", async (req, res) => {
     if (err.name === "AbortError") {
       logger.warn("URL upload failed: request timed out");
       return res.status(400).render("upload", { error: "Could not fetch image", success: null });
+    }
+    if (err instanceof SsrfBlockedError) {
+      logger.warn("URL upload rejected: %s", err.message);
+      return res.status(400).render("upload", { error: "Invalid URL", success: null });
     }
     logger.error("URL upload failed: %s", err.message);
     return res.status(400).render("upload", { error: "Could not fetch image", success: null });

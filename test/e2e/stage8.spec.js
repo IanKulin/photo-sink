@@ -40,6 +40,14 @@ test.describe("Stage 8 — Authentication", () => {
     await ctx.close();
   });
 
+  test("SSRF: uploading from http://127.0.0.1 returns 400 with Invalid URL", async ({ page }) => {
+    await page.goto("/");
+    await page.fill('input[name="url"]', "http://127.0.0.1");
+    await page.click("#fetch-btn");
+    await expect(page.locator(".banner--error")).toBeVisible();
+    await expect(page.locator(".banner--error")).toContainText("Invalid URL");
+  });
+
   test("logout destroys session and redirects to /login", async ({ page }) => {
     await page.goto("/");
     await page.click('form[action="/logout"] button[type="submit"]');
