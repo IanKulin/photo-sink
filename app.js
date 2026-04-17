@@ -30,6 +30,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
+// Parse TRUST_PROXY from env (false | true | number | IP string)
+const trustProxyEnv = process.env.TRUST_PROXY ?? "false";
+let trustProxy;
+if (trustProxyEnv === "false") {
+  trustProxy = false;
+} else if (trustProxyEnv === "true") {
+  trustProxy = true;
+} else if (/^\d+$/.test(trustProxyEnv)) {
+  trustProxy = parseInt(trustProxyEnv, 10);
+} else {
+  // Express also accepts strings like "loopback" or comma-separated IPs
+  trustProxy = trustProxyEnv;
+}
+app.set("trust proxy", trustProxy);
+
 app.locals.version = version;
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));

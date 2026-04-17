@@ -23,8 +23,10 @@ describe("isBlockedIp", () => {
   it("blocks fe80::1", () => assert.equal(isBlockedIp("fe80::1"), true));
   it("blocks fc00::1", () => assert.equal(isBlockedIp("fc00::1"), true));
   it("allows 93.184.216.34", () => assert.equal(isBlockedIp("93.184.216.34"), false));
-  it("allows 172.15.0.1 (just outside private range)", () => assert.equal(isBlockedIp("172.15.0.1"), false));
-  it("allows 172.32.0.1 (just outside private range)", () => assert.equal(isBlockedIp("172.32.0.1"), false));
+  it("allows 172.15.0.1 (just outside private range)", () =>
+    assert.equal(isBlockedIp("172.15.0.1"), false));
+  it("allows 172.32.0.1 (just outside private range)", () =>
+    assert.equal(isBlockedIp("172.32.0.1"), false));
 });
 
 describe("assertSafeUrl", () => {
@@ -37,7 +39,10 @@ describe("assertSafeUrl", () => {
   });
 
   it("throws for ftp:// scheme", async () => {
-    await assert.rejects(() => assertSafeUrl("ftp://example.com", publicResolver), SsrfBlockedError);
+    await assert.rejects(
+      () => assertSafeUrl("ftp://example.com", publicResolver),
+      SsrfBlockedError
+    );
   });
 
   it("throws for http://localhost (resolves to loopback)", async () => {
@@ -48,7 +53,10 @@ describe("assertSafeUrl", () => {
   });
 
   it("throws for http://127.0.0.1 (bare IP)", async () => {
-    await assert.rejects(() => assertSafeUrl("http://127.0.0.1/etc/passwd", publicResolver), SsrfBlockedError);
+    await assert.rejects(
+      () => assertSafeUrl("http://127.0.0.1/etc/passwd", publicResolver),
+      SsrfBlockedError
+    );
   });
 
   it("throws for http://0.0.0.0 (bare IP)", async () => {
@@ -63,7 +71,10 @@ describe("assertSafeUrl", () => {
   });
 
   it("throws for http://192.168.1.1 (bare IP)", async () => {
-    await assert.rejects(() => assertSafeUrl("http://192.168.1.1", publicResolver), SsrfBlockedError);
+    await assert.rejects(
+      () => assertSafeUrl("http://192.168.1.1", publicResolver),
+      SsrfBlockedError
+    );
   });
 
   it("throws for http://10.0.0.1 (bare IP)", async () => {
