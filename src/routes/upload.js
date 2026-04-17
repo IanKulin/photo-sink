@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import rateLimit from "express-rate-limit";
+import { fileTypeFromBuffer } from "file-type";
 import { storeUpload } from "../imageService.js";
 import logger from "../logger.js";
 import { assertSafeUrl, SsrfBlockedError } from "../ssrfGuard.js";
@@ -22,6 +23,23 @@ const uploadRateLimit = rateLimit({
 
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/avif"];
 const MAX_UPLOAD_BYTES = parseInt(process.env.MAX_UPLOAD_BYTES, 10) || 2097152;
+
+async function validateImageBuffer(buffer, declaredMime) {
+  const detected = await fileTypeFromBuffer(buffer);
+  if (!detected || !ALLOWED_MIME_TYPES.includes(detected.mime)) {
+    throw Object.assign(new Error("File content does not match an allowed image type"), {
+      code: "INVALID_MAGIC_BYTES",
+    });
+  }
+  if (detected.mime !== declaredMime) {
+    logger.warn(
+      "MIME mismatch: declared=%s detected=%s — using detected type",
+      declaredMime,
+      detected.mime
+    );
+  }
+  return detected.mime;
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -65,10 +83,18 @@ router.post("/upload/file", uploadRateLimit, (req, res) => {
       return res.status(400).render("upload", { error: "Unsupported image type", success: null });
     }
 
+    let verifiedMime;
     try {
-      await storeUpload(req.file.buffer, req.file.mimetype);
+      verifiedMime = await validateImageBuffer(req.file.buffer, req.file.mimetype);
+    } catch (magicErr) {
+      logger.warn("File upload rejected: %s", magicErr.message);
+      return res.status(400).render("upload", { error: "Unsupported image type", success: null });
+    }
 
-      logger.info("File uploaded successfully (%s)", req.file.mimetype);
+    try {
+      await storeUpload(req.file.buffer, verifiedMime);
+
+      logger.info("File uploaded successfully (%s)", verifiedMime);
       return res.redirect("/?success=1");
     } catch (uploadErr) {
       logger.error("File upload processing failed: %s", uploadErr.message);
@@ -135,9 +161,17 @@ router.post("/upload/url", uploadRateLimit, async (req, res) => {
 
     const imageBuffer = Buffer.concat(chunks.map((c) => Buffer.from(c)));
 
-    await storeUpload(imageBuffer, mime);
+    let verifiedMime;
+    try {
+      verifiedMime = await validateImageBuffer(imageBuffer, mime);
+    } catch (magicErr) {
+      logger.warn("URL upload rejected: %s", magicErr.message);
+      return res.status(400).render("upload", { error: "Unsupported image type", success: null });
+    }
 
-    logger.info("URL upload succeeded (%s)", mime);
+    await storeUpload(imageBuffer, verifiedMime);
+
+    logger.info("URL upload succeeded (%s)", verifiedMime);
     return res.redirect("/?success=1");
   } catch (err) {
     clearTimeout(timeout);
