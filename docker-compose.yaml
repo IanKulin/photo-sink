@@ -1,0 +1,19 @@
+services:
+  photo-sink:
+    image: ghcr.io/iankulin/photo-sink
+    container_name: photo-sink
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      ENCRYPTION_KEY: "big long key created with `npm run generate-key`"
+      MAX_UPLOAD_BYTES: 2097152
+      PORT: 3000
+      LOG_LEVEL: warn
+      SESSION_SECRET: change-me-to-a-random-string
+      AUTH_USERNAME: admin
+      AUTH_PASSWORD_HASH: "big hash created with `npm run docker:hash-password <password>`"
+      TRUST_PROXY: "false"
+      SECURE_COOKIE: "false"
+    restart: unless-stopped
