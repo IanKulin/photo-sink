@@ -18,7 +18,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPL3",
   "type": "module",
   "dependencies": {
     "@iankulin/logger": "^1.1.3",
