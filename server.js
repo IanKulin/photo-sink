@@ -1,6 +1,7 @@
 import app from "./app.js";
 import logger from "./src/logger.js";
 import { closeDb } from "./src/db.js";
+import { closeSessionDb } from "./src/sessionDb.js";
 
 const port = process.env.PORT || 3000;
 
@@ -13,6 +14,7 @@ logger.ready.then(() => {
     logger.info("received %s, shutting down", signal);
     server.close(() => {
       closeDb();
+      closeSessionDb();
       logger.info("shutdown complete");
       process.exit(0);
     });

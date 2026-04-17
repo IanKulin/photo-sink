@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { createRequire } from "module";
 import logger from "./src/logger.js";
 import "./src/db.js";
+import sessionDb from "./src/sessionDb.js";
 import authRouter from "./src/routes/auth.js";
 import requireAuth from "./src/middleware/requireAuth.js";
 import uploadRouter from "./src/routes/upload.js";
@@ -26,6 +27,7 @@ if (!sessionSecret) {
 
 const require = createRequire(import.meta.url);
 const { version } = require("./package.json");
+const BetterSqlite3Store = require("better-sqlite3-session-store")(session);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
@@ -65,6 +67,7 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(
   session({
+    store: new BetterSqlite3Store({ client: sessionDb }),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
