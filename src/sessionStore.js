@@ -77,7 +77,9 @@ export default function createSessionStore(Store) {
     length(cb) {
       try {
         const { count } = this.db
-          .prepare(`SELECT COUNT(*) AS count FROM ${TABLE} WHERE datetime('now') < datetime(expire)`)
+          .prepare(
+            `SELECT COUNT(*) AS count FROM ${TABLE} WHERE datetime('now') < datetime(expire)`
+          )
           .get();
         cb(null, count);
       } catch (err) {

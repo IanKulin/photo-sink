@@ -45,9 +45,7 @@ function length(store) {
 }
 
 function clear(store) {
-  return new Promise((resolve, reject) =>
-    store.clear((err) => (err ? reject(err) : resolve()))
-  );
+  return new Promise((resolve, reject) => store.clear((err) => (err ? reject(err) : resolve())));
 }
 
 function all(store) {
@@ -143,16 +141,12 @@ describe("SqliteStore", () => {
   test("touch extends expiry on a live session", async () => {
     await set(store, "abc", { user: "ian", cookie: { maxAge: 60_000 } });
 
-    const before = db
-      .prepare("SELECT expire FROM sessions WHERE sid = ?")
-      .get("abc").expire;
+    const before = db.prepare("SELECT expire FROM sessions WHERE sid = ?").get("abc").expire;
 
     // touch with a longer maxAge
     await touch(store, "abc", { cookie: { maxAge: 3_600_000 } });
 
-    const after = db
-      .prepare("SELECT expire FROM sessions WHERE sid = ?")
-      .get("abc").expire;
+    const after = db.prepare("SELECT expire FROM sessions WHERE sid = ?").get("abc").expire;
 
     assert.ok(new Date(after) > new Date(before), "expire should be extended");
   });
@@ -178,9 +172,6 @@ describe("SqliteStore", () => {
     const row = db.prepare("SELECT expire FROM sessions WHERE sid = ?").get("abc");
     const expireMs = new Date(row.expire).getTime();
     const expectedMs = Date.now() + 86_400_000;
-    assert.ok(
-      Math.abs(expireMs - expectedMs) < 2_000,
-      "expire should be ~1 day from now"
-    );
+    assert.ok(Math.abs(expireMs - expectedMs) < 2_000, "expire should be ~1 day from now");
   });
 });
