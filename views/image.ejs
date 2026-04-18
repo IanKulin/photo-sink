@@ -1,7 +1,9 @@
 <%- include('_header', { actionsPartial: '_image-actions' }) %>
 
     <div class="image-detail">
-      <img src="<%= imageSrc %>" alt="Uploaded image <%= id %>" class="image-detail__img">
+      <a href="<%= imageSrc %>" target="_blank" rel="noopener" class="image-detail__link">
+        <img src="<%= imageSrc %>" alt="Uploaded image <%= id %>" class="image-detail__img">
+      </a>
     </div>
 
     <div id="confirm-delete" class="modal-backdrop">

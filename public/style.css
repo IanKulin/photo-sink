@@ -417,19 +417,26 @@ main {
 
 /* ── Image detail ── */
 .image-detail {
-  max-width: 800px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
+.image-detail__link {
+  display: flex;
+  justify-content: center;
+}
+
 .image-detail__img {
   max-width: 100%;
+  max-height: calc(100vh - 8rem);
+  object-fit: contain;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   display: block;
   margin: 0 auto;
+  cursor: zoom-in;
 }
 
 /* ── Responsive ── */
