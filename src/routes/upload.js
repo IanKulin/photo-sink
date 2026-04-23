@@ -118,11 +118,40 @@ router.post("/upload/url", uploadRateLimit, async (req, res) => {
     return res.status(400).render("upload", { error: "Invalid URL", success: null });
   }
 
+  // Strip query parameters and try that URL first to avoid lossy format conversions
+  // (e.g. ?format=webp). Fall back to the original URL if the stripped version fails.
+  let strippedUrl;
+  try {
+    const parsed = new URL(url);
+    if (parsed.search) {
+      parsed.search = "";
+      strippedUrl = parsed.toString();
+    }
+  } catch {
+    // If URL parsing fails, proceed with original (assertSafeUrl already validated it)
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
 
   try {
-    const response = await fetch(url, { signal: controller.signal, redirect: "error" });
+    let response;
+    if (strippedUrl) {
+      logger.info("URL upload: trying without query params (%s)", strippedUrl);
+      const r = await fetch(strippedUrl, { signal: controller.signal, redirect: "error" });
+      if (r.ok) {
+        response = r;
+      } else {
+        logger.info(
+          "URL upload: stripped URL returned HTTP %d, falling back to original",
+          r.status
+        );
+        await r.body?.cancel();
+      }
+    }
+    if (!response) {
+      response = await fetch(url, { signal: controller.signal, redirect: "error" });
+    }
     clearTimeout(timeout);
 
     if (!response.ok) {
