@@ -1,4 +1,5 @@
 const grid = document.getElementById("gallery-grid");
+const toolbar = document.getElementById("gallery-toolbar");
 const countEl = document.getElementById("gallery-count");
 const selectBtn = document.getElementById("gallery-select-btn");
 const modal = document.getElementById("bulk-modal");
@@ -30,8 +31,10 @@ function syncSelection() {
 
   countEl.textContent = `${n} selected`;
   if (deleteBtn) {
-    deleteBtn.textContent = `Delete (${n})`;
     deleteBtn.disabled = n === 0;
+  }
+  if (mobileDelete) {
+    mobileDelete.disabled = n === 0;
   }
   if (mobileCount) {
     mobileCount.textContent = `${n} selected`;
@@ -54,20 +57,24 @@ function enterSelectMode() {
     deleteBtn.className = "btn btn--small btn--danger";
     deleteBtn.type = "button";
     deleteBtn.id = "gallery-delete-btn";
-    deleteBtn.textContent = "Delete (0)";
+    deleteBtn.textContent = "Delete";
     deleteBtn.disabled = true;
     deleteBtn.addEventListener("click", () => {
       if (selectedIds().length > 0) modal.hidden = false;
     });
-    document.getElementById("gallery-toolbar")?.appendChild(deleteBtn);
+    document.getElementById("gallery-toolbar-actions")?.appendChild(deleteBtn);
   } else {
     deleteBtn.hidden = false;
   }
 
   countEl.textContent = "0 selected";
+  if (mobileDelete) {
+    mobileDelete.disabled = true;
+  }
 
-  // Mobile: transform bottom tab bar
+  // Mobile: transform bottom tab bar, hide top toolbar
   tabBar?.classList.add("bottom-tab-bar--select-mode");
+  toolbar?.classList.add("gallery-toolbar--select-mode");
 }
 
 function exitSelectMode() {
@@ -92,8 +99,9 @@ function exitSelectMode() {
   const total = document.querySelectorAll(".gallery-card").length;
   countEl.textContent = `${total} ${total === 1 ? "image" : "images"}`;
 
-  // Mobile: restore bottom tab bar
+  // Mobile: restore bottom tab bar, show top toolbar
   tabBar?.classList.remove("bottom-tab-bar--select-mode");
+  toolbar?.classList.remove("gallery-toolbar--select-mode");
 }
 
 selectBtn?.addEventListener("click", () => {

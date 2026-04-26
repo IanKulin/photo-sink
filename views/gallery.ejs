@@ -4,9 +4,11 @@
   <span class="gallery-toolbar__count" id="gallery-count">
     <%= images.length %> <%= images.length === 1 ? 'image' : 'images' %>
   </span>
+  <div class="gallery-toolbar__actions" id="gallery-toolbar-actions">
   <% if (images.length > 0) { %>
   <button class="btn btn--small btn--secondary" id="gallery-select-btn" type="button">Select</button>
   <% } %>
+  </div>
 </div>
 
     <% if (images.length === 0) { %>
@@ -33,8 +35,8 @@
       <div class="modal">
         <p class="modal__body" id="bulk-modal-msg">Delete the selected images? This cannot be undone.</p>
         <div class="modal__actions">
-          <button id="bulk-confirm-btn" class="btn btn--danger" type="button">Delete</button>
           <button id="bulk-cancel-btn" class="btn" type="button">Cancel</button>
+          <button id="bulk-confirm-btn" class="btn btn--danger" type="button">Delete</button>
         </div>
       </div>
     </div>
