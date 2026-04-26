@@ -441,8 +441,7 @@ main {
 .main--image-view {
   display: flex;
   flex-direction: column;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0;
 }
 
 /* ── Image detail ── */
@@ -451,7 +450,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
   overflow: hidden;
 }
 
@@ -461,14 +459,8 @@ main {
 
 .image-detail__img {
   max-width: 100%;
-  /*
-   * Desktop calc breakdown:
-   *   main height = 100vh - header (3rem)
-   *   shelf = 3.5rem
-   *   image-detail padding = 4rem (2rem top + 2rem bottom)
-   *   available = 100vh - 10.5rem; using 11.5rem leaves ~1rem breathing room
-   */
-  max-height: calc(100vh - var(--header-height) - var(--shelf-height) - 5rem);
+  /* available = 100vh - header - shelf; small remainder for breathing room */
+  max-height: calc(100vh - var(--header-height) - var(--shelf-height) - 0.5rem);
   object-fit: contain;
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -706,7 +698,7 @@ main {
   border-top: 1px solid var(--border);
   min-height: var(--shelf-height);
   flex-wrap: wrap;
-  margin: 0 -1rem;
+  margin: 0;
 }
 
 .image-shelf__meta {
@@ -744,21 +736,10 @@ main {
     padding: 0.6rem 1rem;
   }
 
-  .image-detail {
-    padding: 1rem 0;
-  }
-
   .image-detail__img {
-    /*
-     * Mobile calc breakdown:
-     *   main height = 100svh - header (3rem) - body padding-bottom (tab-bar 3.5rem)
-     *               = 100svh - 6.5rem
-     *   shelf = 3.5rem
-     *   image-detail padding = 2rem (1rem top + 1rem bottom, mobile override)
-     *   available = 100svh - 12rem; using 12.5rem leaves 0.5rem breathing room
-     */
+    /* available = 100svh - header - body-pad (tab-bar) - shelf */
     max-height: calc(
-      100svh - var(--header-height) - var(--tab-bar-height) - var(--shelf-height) - 2.5rem
+      100svh - var(--header-height) - var(--tab-bar-height) - var(--shelf-height) - 0.5rem
     );
   }
 }
