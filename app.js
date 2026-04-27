@@ -82,7 +82,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, sameSite: "lax", secure: process.env.SECURE_COOKIE === "true" },
+    cookie: { httpOnly: true, sameSite: "strict", secure: process.env.SECURE_COOKIE === "true" },
   })
 );
 
