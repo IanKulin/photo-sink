@@ -841,9 +841,9 @@ main {
   }
 
   .image-detail__img {
-    /* available = 100svh - header - body-pad (tab-bar) - shelf */
+    /* available = 100dvh - header - body-pad (tab-bar) - shelf */
     max-height: calc(
-      100svh - var(--header-height) - var(--tab-bar-height) - var(--shelf-height) - 0.5rem
+      100dvh - var(--header-height) - var(--tab-bar-height) - var(--shelf-height) - 0.5rem
     );
   }
 }
