@@ -167,11 +167,11 @@ describe("SqliteStore", () => {
     assert.ok(expireMs <= nowMs + 60_000 + 1_000, "expire should be ~60s from now");
   });
 
-  test("set defaults to 1 day when maxAge is absent", async () => {
+  test("set defaults to 7 days when maxAge is absent", async () => {
     await set(store, "abc", { cookie: {} });
     const row = db.prepare("SELECT expire FROM sessions WHERE sid = ?").get("abc");
     const expireMs = new Date(row.expire).getTime();
-    const expectedMs = Date.now() + 86_400_000;
-    assert.ok(Math.abs(expireMs - expectedMs) < 2_000, "expire should be ~1 day from now");
+    const expectedMs = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    assert.ok(Math.abs(expireMs - expectedMs) < 2_000, "expire should be ~7 days from now");
   });
 });

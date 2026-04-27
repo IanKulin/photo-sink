@@ -1,5 +1,5 @@
 const TABLE = "sessions";
-const ONE_DAY_MS = 86_400_000;
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 const CLEANUP_INTERVAL_MS = 900_000;
 
 const schema = `
@@ -36,7 +36,7 @@ export default function createSessionStore(Store) {
     }
 
     set(sid, sess, cb) {
-      const ageMs = sess?.cookie?.maxAge ?? ONE_DAY_MS;
+      const ageMs = sess?.cookie?.maxAge ?? SEVEN_DAYS_MS;
       const expire = new Date(Date.now() + ageMs).toISOString();
       try {
         this.db
@@ -58,7 +58,7 @@ export default function createSessionStore(Store) {
     }
 
     touch(sid, sess, cb) {
-      const ageMs = sess?.cookie?.maxAge ?? ONE_DAY_MS;
+      const ageMs = sess?.cookie?.maxAge ?? SEVEN_DAYS_MS;
       const expire = sess?.cookie?.expires
         ? new Date(sess.cookie.expires).toISOString()
         : new Date(Date.now() + ageMs).toISOString();

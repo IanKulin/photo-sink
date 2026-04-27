@@ -43,6 +43,7 @@ router.post("/login", loginLimiter, async (req, res) => {
   logger.info("Successful login: username=%s ip=%s", username, req.ip);
   req.session.authenticated = true;
   req.session.username = username;
+  req.session.lastActivity = Date.now();
   res.redirect("/");
 });
 
