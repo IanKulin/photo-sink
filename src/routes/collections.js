@@ -54,7 +54,7 @@ router.post("/", (req, res) => {
     const collections = getAllCollections();
     return res
       .status(400)
-      .render("collections", { collections, error: "A collection with that name already exists." });
+      .render("collections", { collections, error: "Could not create collection." });
   }
 
   res.redirect("/collections");
