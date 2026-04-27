@@ -1,0 +1,82 @@
+<%- include('_header', { mainClass: 'main--image-view', page: context === 'collection' ? 'collections' : 'allimages' }) %>
+
+<div id="nav-data" data-prev-url="<%= prevUrl || '' %>" data-next-url="<%= nextUrl || '' %>" hidden></div>
+
+    <div class="image-detail">
+      <a href="<%= imageSrc %>" target="_blank" rel="noopener" class="image-detail__link" title="Open in new tab">
+        <img src="<%= imageSrc %>" alt="Uploaded image <%= id %>" class="image-detail__img">
+      </a>
+    </div>
+
+    <div class="image-shelf">
+      <div class="image-shelf__back">
+        <% if (context === 'collection') { %>
+        <a href="/collections/<%= collection.slug %>" class="back-link">&#8592; <%= collection.name %></a>
+        <% } else { %>
+        <a href="/allimages" class="back-link">&#8592; All Images</a>
+        <% } %>
+      </div>
+
+      <span class="image-shelf__meta"><%= created_at %></span>
+
+      <div class="image-shelf__nav">
+        <% if (prevUrl) { %>
+        <a href="<%= prevUrl %>" class="btn btn--small btn--secondary image-shelf__nav-btn">&#8592; Prev</a>
+        <% } else { %>
+        <span class="btn btn--small btn--secondary image-shelf__nav-btn image-shelf__nav-btn--disabled" aria-disabled="true">&#8592; Prev</span>
+        <% } %>
+        <% if (nextUrl) { %>
+        <a href="<%= nextUrl %>" class="btn btn--small btn--secondary image-shelf__nav-btn">Next &#8594;</a>
+        <% } else { %>
+        <span class="btn btn--small btn--secondary image-shelf__nav-btn image-shelf__nav-btn--disabled" aria-disabled="true">Next &#8594;</span>
+        <% } %>
+      </div>
+
+      <div class="image-shelf__actions">
+        <a href="/image/<%= id %>/download" download class="btn btn--small">Download</a>
+        <button type="button" id="add-to-collection-btn" class="btn btn--small btn--secondary">+ Collection</button>
+        <a href="#confirm-delete" class="btn btn--small btn--danger">Delete</a>
+      </div>
+    </div>
+
+    <% if (collectionsForImage && collectionsForImage.length > 0) { %>
+    <div class="image-collections">
+      <h3 class="image-collections__title">In collections</h3>
+      <ul class="image-collections__list">
+        <% collectionsForImage.forEach(function(col) { %>
+        <li class="image-collections__item">
+          <a href="/collections/<%= col.slug %>" class="image-collections__link"><%= col.name %></a>
+          <form method="POST" action="/collections/<%= col.slug %>/remove" class="image-collections__remove-form">
+            <input type="hidden" name="ids" value="<%= id %>">
+            <input type="hidden" name="returnTo" value="/image/<%= id %>">
+            <button type="submit" class="btn btn--small image-collections__remove-btn" title="Remove from collection">&#x2715;</button>
+          </form>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
+    <% } %>
+
+    <div id="confirm-delete" class="modal-backdrop">
+      <div class="modal">
+        <% if (context === 'collection') { %>
+        <p class="modal__body">Delete this image? It will be removed from all collections and cannot be undone.</p>
+        <% } else { %>
+        <p class="modal__body">Delete this image? This cannot be undone.</p>
+        <% } %>
+        <div class="modal__actions">
+          <a href="#" class="btn">Cancel</a>
+          <form method="POST" action="/image/<%= id %>/delete" class="modal__form">
+            <input type="hidden" name="returnTo" value="<%= deleteReturnTo %>">
+            <button type="submit" class="btn btn--danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+<%- include('_add-to-collection-modal') %>
+
+<script src="/add-to-collection.js" defer></script>
+<script src="/image-detail.js" defer></script>
+
+<%- include('_footer') %>

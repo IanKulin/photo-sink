@@ -23,6 +23,14 @@
     }
   });
 
+  const label = zone.querySelector('label[for="file-input"]');
+  label.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      input.click();
+    }
+  });
+
   const uploadBtn = document.getElementById("upload-btn");
   const fileName = document.getElementById("file-name");
   input.addEventListener("change", function () {

@@ -1,5 +1,5 @@
 import express from "express";
-import { getById, deleteById, getAdjacentImages } from "../db.js";
+import { getById, deleteById, getAdjacentImages, getCollectionsForImage } from "../db.js";
 import { getImage, getThumb } from "../imageService.js";
 import logger from "../logger.js";
 
@@ -36,13 +36,18 @@ router.get("/:id", (req, res) => {
   }
   const ext = MIME_TO_EXT[row.mime_type] || "bin";
   const { prevId, nextId } = getAdjacentImages(row.id);
-  return res.render("image", {
+  const collectionsForImage = getCollectionsForImage(row.id);
+  return res.render("image-detail", {
     id: row.id,
     mime_type: row.mime_type,
     created_at: row.created_at,
     imageSrc: `/image/${row.id}.${ext}`,
-    prevId,
-    nextId,
+    prevUrl: prevId ? `/image/${prevId}` : null,
+    nextUrl: nextId ? `/image/${nextId}` : null,
+    context: "allimages",
+    collection: null,
+    collectionsForImage,
+    deleteReturnTo: "/allimages",
   });
 });
 
@@ -84,7 +89,9 @@ router.post("/:id/delete", (req, res, next) => {
   try {
     deleteById(id);
     logger.info("Image deleted: id=%s", id);
-    return res.redirect("/gallery");
+    const returnTo = req.body.returnTo;
+    const safeReturnTo = returnTo && /^\/[a-zA-Z0-9/_-]*$/.test(returnTo) ? returnTo : "/allimages";
+    return res.redirect(safeReturnTo);
   } catch (err) {
     logger.error("Image delete failed: id=%s: %s", id, err.message);
     return next(err);
