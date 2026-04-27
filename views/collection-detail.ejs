@@ -22,7 +22,7 @@
     <label class="gallery-card__select" aria-label="Select image">
       <input type="checkbox" class="gallery-card__checkbox" value="<%= img.id %>">
     </label>
-    <a href="/image/<%= img.id %>" class="gallery-card__link">
+    <a href="/collections/<%= collection.slug %>/image/<%= img.id %>" class="gallery-card__link">
       <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image" class="gallery-card__img" loading="lazy">
       <time class="gallery-card__date" datetime="<%= img.created_at %>"><%= img.created_at %></time>
     </a>
