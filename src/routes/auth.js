@@ -27,7 +27,8 @@ router.post("/login", loginLimiter, async (req, res) => {
     const a = Buffer.from(String(username));
     const b = Buffer.from(expectedUsername);
     if (a.length !== b.length) {
-      crypto.timingSafeEqual(b, b);
+      const padded = Buffer.alloc(b.length);
+      crypto.timingSafeEqual(padded, b);
       return false;
     }
     return crypto.timingSafeEqual(a, b);
