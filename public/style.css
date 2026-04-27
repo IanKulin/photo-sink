@@ -358,6 +358,36 @@ main {
   justify-content: center;
 }
 
+.modal--form {
+  max-width: 380px;
+  width: 100%;
+  text-align: left;
+  padding: 2rem;
+}
+
+.modal__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal__form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.modal__submit {
+  width: 100%;
+  justify-content: center;
+}
+
+.modal__cancel {
+  width: 100%;
+  justify-content: center;
+}
+
 /* ── Gallery grid ── */
 .gallery-grid {
   display: grid;
