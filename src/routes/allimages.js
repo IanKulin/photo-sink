@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
   try {
     const rows = getAllImages();
     const images = rows.map((row) => ({ id: row.id, created_at: row.created_at }));
-    res.render("allimages", { images, page: "allimages" });
+    res.render("allimages", { images, page: "allimages", deleteError: req.query.error === "1" });
   } catch (err) {
     logger.error("Failed to load all images: %s", err.message);
     res.status(500).render("error", { message: "Failed to load images." });
@@ -27,10 +27,11 @@ router.post("/delete", (req, res) => {
   try {
     deleteManyById(ids);
     logger.info("Bulk deleted %d image(s): %s", ids.length, ids.join(","));
+    return res.redirect("/allimages");
   } catch (err) {
     logger.error("Bulk delete failed: %s", err.message);
+    return res.redirect("/allimages?error=1");
   }
-  return res.redirect("/allimages");
 });
 
 export default router;

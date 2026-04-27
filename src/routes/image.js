@@ -9,12 +9,22 @@ const router = express.Router();
 
 router.get("/:id.:ext", (req, res) => {
   try {
-    const result = getImage(req.params.id);
+    const { id } = req.params;
+    const etag = `"${id}"`;
+
+    if (req.headers["if-none-match"] === etag) {
+      const row = getById(id);
+      if (row) return res.status(304).end();
+    }
+
+    const result = getImage(id);
     if (!result) {
-      logger.warn("Image not found: id=%s", req.params.id);
+      logger.warn("Image not found: id=%s", id);
       return res.status(404).render("error", { message: "Image not found." });
     }
     res.set("Content-Type", result.mime_type);
+    res.set("Cache-Control", "private, max-age=3600");
+    res.set("ETag", etag);
     return res.send(result.imageBuffer);
   } catch (err) {
     logger.error("Failed to decrypt image id=%s: %s", req.params.id, err.message);
