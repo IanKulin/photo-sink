@@ -3,6 +3,7 @@ import { getById, deleteById, getAdjacentImages } from "../db.js";
 import { getImage, getThumb } from "../imageService.js";
 import logger from "../logger.js";
 import { MIME_TO_EXT } from "../mimeTypes.js";
+import { safeRedirect } from "../redirect.js";
 
 const router = express.Router();
 
@@ -81,7 +82,7 @@ router.post("/:id/delete", (req, res, next) => {
     deleteById(id);
     logger.info("Image deleted: id=%s", id);
     const returnTo = req.body.returnTo;
-    const safeReturnTo = returnTo && /^\/[a-zA-Z0-9/_-]*$/.test(returnTo) ? returnTo : "/allimages";
+    const safeReturnTo = safeRedirect(returnTo, "/allimages");
     return res.redirect(safeReturnTo);
   } catch (err) {
     logger.error("Image delete failed: id=%s: %s", id, err.message);

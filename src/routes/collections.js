@@ -13,6 +13,7 @@ import {
 import { slugify } from "../slugify.js";
 import logger from "../logger.js";
 import { MIME_TO_EXT } from "../mimeTypes.js";
+import { safeRedirect } from "../redirect.js";
 
 const router = express.Router();
 
@@ -111,8 +112,7 @@ router.post("/:slug/remove", (req, res, next) => {
   if (ids.length > 0) removeImagesFromCollection(ids, collection.id);
 
   const returnTo = req.body.returnTo;
-  const safeReturnTo =
-    returnTo && /^\/[a-zA-Z0-9/_-]*$/.test(returnTo) ? returnTo : `/collections/${req.params.slug}`;
+  const safeReturnTo = safeRedirect(returnTo, `/collections/${req.params.slug}`);
   res.redirect(safeReturnTo);
 });
 
