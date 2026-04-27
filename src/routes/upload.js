@@ -146,6 +146,7 @@ router.post("/upload/url", uploadRateLimit, async (req, res) => {
     let response;
     if (strippedUrl) {
       logger.info("URL upload: trying without query params (%s)", strippedUrl);
+      // redirect: "error" is intentional — prevents redirect-based SSRF bypass (public URL -> internal address)
       const r = await fetch(strippedUrl, { signal: controller.signal, redirect: "error" });
       if (r.ok) {
         response = r;
@@ -158,6 +159,7 @@ router.post("/upload/url", uploadRateLimit, async (req, res) => {
       }
     }
     if (!response) {
+      // redirect: "error" is intentional — prevents redirect-based SSRF bypass (public URL -> internal address)
       response = await fetch(url, { signal: controller.signal, redirect: "error" });
     }
     clearTimeout(timeout);
