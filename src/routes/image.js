@@ -1,5 +1,5 @@
 import express from "express";
-import { getById, deleteById, getAdjacentImages, getCollectionsForImage } from "../db.js";
+import { getById, deleteById, getAdjacentImages } from "../db.js";
 import { getImage, getThumb } from "../imageService.js";
 import logger from "../logger.js";
 
@@ -36,7 +36,6 @@ router.get("/:id", (req, res) => {
   }
   const ext = MIME_TO_EXT[row.mime_type] || "bin";
   const { prevId, nextId } = getAdjacentImages(row.id);
-  const collectionsForImage = getCollectionsForImage(row.id);
   return res.render("image-detail", {
     id: row.id,
     mime_type: row.mime_type,
@@ -46,7 +45,6 @@ router.get("/:id", (req, res) => {
     nextUrl: nextId ? `/image/${nextId}` : null,
     context: "allimages",
     collection: null,
-    collectionsForImage,
     deleteReturnTo: "/allimages",
   });
 });

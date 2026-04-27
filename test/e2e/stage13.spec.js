@@ -125,7 +125,7 @@ test.describe("Stage 13 — Single Image View: Context, Collections, Navigation"
     await expect(page.locator(".image-shelf__nav-btn--disabled").first()).toBeVisible();
   });
 
-  test("image detail shows collections membership list", async ({ page, request }) => {
+  test("image detail shows Collections button", async ({ page, request }) => {
     const tag = Date.now();
     await createCollection(page, `Membership-${tag}`);
     await uploadImage(page, "red.jpg");
@@ -136,14 +136,11 @@ test.describe("Stage 13 — Single Image View: Context, Collections, Navigation"
     await request.post(`/api/image/${imageId}/collections/${col.id}/toggle`);
 
     await page.goto(`/image/${imageId}`);
-    await expect(page.locator(".image-collections")).toBeVisible();
-    await expect(page.locator(".image-collections__list")).toContainText(`Membership-${tag}`);
+    await expect(page.locator("#add-to-collection-btn")).toBeVisible();
+    await expect(page.locator("#add-to-collection-btn")).toContainText("Collections...");
   });
 
-  test("remove from collection via image detail redirects back to image", async ({
-    page,
-    request,
-  }) => {
+  test("Collections button opens add-to-collection modal", async ({ page, request }) => {
     const tag = Date.now();
     await createCollection(page, `RemoveImg-${tag}`);
     await uploadImage(page, "red.jpg");
@@ -154,15 +151,8 @@ test.describe("Stage 13 — Single Image View: Context, Collections, Navigation"
     await request.post(`/api/image/${imageId}/collections/${col.id}/toggle`);
 
     await page.goto(`/image/${imageId}`);
-    await expect(page.locator(".image-collections")).toBeVisible();
-    await page.locator(".image-collections__remove-btn").first().click();
-    await expect(page).toHaveURL(`/image/${imageId}`);
-
-    // Collection should no longer appear in the list
-    const hasCollection = await page.locator(".image-collections").isVisible();
-    if (hasCollection) {
-      await expect(page.locator(".image-collections__list")).not.toContainText(`RemoveImg-${tag}`);
-    }
+    await page.locator("#add-to-collection-btn").click();
+    await expect(page.locator("#atc-modal")).toBeVisible();
   });
 
   test("delete from collection image view redirects to collection", async ({

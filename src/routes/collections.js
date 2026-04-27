@@ -8,7 +8,6 @@ import {
   removeImagesFromCollection,
   deleteManyById,
   getAdjacentImagesInCollection,
-  getCollectionsForImage,
   getById,
 } from "../db.js";
 import { slugify } from "../slugify.js";
@@ -89,7 +88,6 @@ router.get("/:slug/image/:id", (req, res, next) => {
 
   const ext = MIME_TO_EXT[row.mime_type] || "bin";
   const { prevId, nextId } = getAdjacentImagesInCollection(row.id, req.params.slug);
-  const collectionsForImage = getCollectionsForImage(row.id);
 
   return res.render("image-detail", {
     id: row.id,
@@ -100,7 +98,6 @@ router.get("/:slug/image/:id", (req, res, next) => {
     nextUrl: nextId ? `/collections/${req.params.slug}/image/${nextId}` : null,
     context: "collection",
     collection,
-    collectionsForImage,
     deleteReturnTo: `/collections/${req.params.slug}`,
   });
 });

@@ -33,29 +33,11 @@
       </div>
 
       <div class="image-shelf__actions">
+        <button type="button" id="add-to-collection-btn" class="btn btn--small btn--secondary">Collections...</button>
         <a href="/image/<%= id %>/download" download class="btn btn--small">Download</a>
-        <button type="button" id="add-to-collection-btn" class="btn btn--small btn--secondary">+ Collection</button>
         <a href="#confirm-delete" class="btn btn--small btn--danger">Delete</a>
       </div>
     </div>
-
-    <% if (collectionsForImage && collectionsForImage.length > 0) { %>
-    <div class="image-collections">
-      <h3 class="image-collections__title">In collections</h3>
-      <ul class="image-collections__list">
-        <% collectionsForImage.forEach(function(col) { %>
-        <li class="image-collections__item">
-          <a href="/collections/<%= col.slug %>" class="image-collections__link"><%= col.name %></a>
-          <form method="POST" action="/collections/<%= col.slug %>/remove" class="image-collections__remove-form">
-            <input type="hidden" name="ids" value="<%= id %>">
-            <input type="hidden" name="returnTo" value="/image/<%= id %>">
-            <button type="submit" class="btn btn--small image-collections__remove-btn" title="Remove from collection">&#x2715;</button>
-          </form>
-        </li>
-        <% }); %>
-      </ul>
-    </div>
-    <% } %>
 
     <div id="confirm-delete" class="modal-backdrop">
       <div class="modal">
