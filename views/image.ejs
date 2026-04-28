@@ -13,12 +13,12 @@
         <% if (prevId) { %>
         <a href="/image/<%= prevId %>" class="btn btn--small btn--secondary image-shelf__nav-btn">&#8592; Prev</a>
         <% } else { %>
-        <span class="btn btn--small btn--secondary image-shelf__nav-btn image-shelf__nav-btn--disabled" aria-disabled="true">&#8592; Prev</span>
+        <button class="btn btn--small btn--secondary image-shelf__nav-btn image-shelf__nav-btn--disabled" disabled>&#8592; Prev</button>
         <% } %>
         <% if (nextId) { %>
         <a href="/image/<%= nextId %>" class="btn btn--small btn--secondary image-shelf__nav-btn">Next &#8594;</a>
         <% } else { %>
-        <span class="btn btn--small btn--secondary image-shelf__nav-btn image-shelf__nav-btn--disabled" aria-disabled="true">Next &#8594;</span>
+        <button class="btn btn--small btn--secondary image-shelf__nav-btn image-shelf__nav-btn--disabled" disabled>Next &#8594;</button>
         <% } %>
       </div>
 
