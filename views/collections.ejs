@@ -1,11 +1,11 @@
 <%- include('_header', { page: 'collections', pageTitle: 'Collections' }) %>
 
 <h1 class="sr-only">Collections</h1>
-<div class="gallery-toolbar" id="gallery-toolbar">
-  <span class="gallery-toolbar__count" id="gallery-count">
+<div class="grid-toolbar" id="grid-toolbar">
+  <span class="grid-toolbar__count" id="grid-count">
     <%= collections.length %> <%= collections.length === 1 ? 'collection' : 'collections' %>
   </span>
-  <div class="gallery-toolbar__actions" id="gallery-toolbar-actions">
+  <div class="grid-toolbar__actions" id="grid-toolbar-actions">
     <button class="btn btn--small btn--secondary" id="collections-add-btn" type="button">+</button>
     <% if (collections.length > 0) { %>
     <button class="btn btn--small btn--secondary" id="collections-select-btn" type="button">Select</button>
@@ -18,12 +18,12 @@
 <% } %>
 
 <% if (collections.length === 0) { %>
-<p class="gallery-empty">Create your first collection</p>
+<p class="image-grid__empty">Create your first collection</p>
 <% } else { %>
 <div class="collection-grid" id="collection-grid">
   <% collections.forEach(function(col) { %>
   <div class="collection-card" data-id="<%= col.id %>">
-    <label class="gallery-card__select">
+    <label class="image-card__select">
       <input type="checkbox" class="collection-card__checkbox" value="<%= col.id %>" aria-label="Select collection">
     </label>
     <a href="/collections/<%= col.slug %>" class="collection-card__link">

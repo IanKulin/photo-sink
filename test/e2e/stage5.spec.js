@@ -24,10 +24,10 @@ async function getLastImageId() {
 }
 
 test.describe("Stage 5 — Image Detail, Download & Delete", () => {
-  test("clicking a gallery card navigates to /image/:id detail page", async ({ page }) => {
+  test("clicking an image card navigates to /image/:id detail page", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     await page.goto("/allimages");
-    await page.locator(".gallery-card").first().click();
+    await page.locator(".image-card").first().click();
     await expect(page).toHaveURL(/\/image\/\d+/);
     expect(page.url()).toMatch(/\/image\/\d+$/);
   });
@@ -91,7 +91,7 @@ test.describe("Stage 5 — Image Detail, Download & Delete", () => {
     expect(download.suggestedFilename()).toBe(`photo-${id}.webp`);
   });
 
-  test("delete button removes image and redirects to gallery", async ({ page }) => {
+  test("delete button removes image and redirects to all images", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     const id = await getLastImageId();
     await page.goto(`/image/${id}`);
@@ -105,7 +105,7 @@ test.describe("Stage 5 — Image Detail, Download & Delete", () => {
     expect(res.status()).toBe(404);
   });
 
-  test("deleted image no longer appears in gallery", async ({ page }) => {
+  test("deleted image no longer appears in all images", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     const id = await getLastImageId();
     await page.goto(`/image/${id}`);
@@ -124,7 +124,7 @@ test.describe("Stage 5 — Image Detail, Download & Delete", () => {
     expect(res.status()).toBe(404);
   });
 
-  test("back to gallery link is present and works", async ({ page }) => {
+  test("back to all images link is present and works", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     const id = await getLastImageId();
     await page.goto(`/image/${id}`);

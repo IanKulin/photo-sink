@@ -24,8 +24,8 @@ test.describe("Stage 9 — Route Rename & Navigation", () => {
 
   test("/allimages renders image grid or empty state", async ({ page }) => {
     await page.goto("/allimages");
-    const hasGrid = await page.locator(".gallery-grid").isVisible();
-    const hasEmpty = await page.locator(".gallery-empty").isVisible();
+    const hasGrid = await page.locator(".image-grid").isVisible();
+    const hasEmpty = await page.locator(".image-grid__empty").isVisible();
     expect(hasGrid || hasEmpty).toBe(true);
   });
 });

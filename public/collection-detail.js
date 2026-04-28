@@ -1,7 +1,7 @@
-const grid = document.getElementById("gallery-grid");
-const toolbar = document.getElementById("gallery-toolbar");
-const countEl = document.getElementById("gallery-count");
-const selectBtn = document.getElementById("gallery-select-btn");
+const grid = document.getElementById("image-grid");
+const toolbar = document.getElementById("grid-toolbar");
+const countEl = document.getElementById("grid-count");
+const selectBtn = document.getElementById("grid-select-btn");
 const removeForm = document.getElementById("remove-form");
 const deleteForm = document.getElementById("delete-form");
 const removeModal = document.getElementById("remove-modal");
@@ -21,10 +21,10 @@ let removeBtn = null;
 let permDeleteBtn = null;
 let addToCollectionBtn = null;
 
-const total = document.querySelectorAll(".gallery-card").length;
+const total = document.querySelectorAll(".image-card").length;
 
 function selectedIds() {
-  return [...document.querySelectorAll(".gallery-card__checkbox:checked")].map((cb) =>
+  return [...document.querySelectorAll(".image-card__checkbox:checked")].map((cb) =>
     Number(cb.value)
   );
 }
@@ -33,9 +33,9 @@ function syncSelection() {
   const ids = selectedIds();
   const n = ids.length;
 
-  document.querySelectorAll(".gallery-card").forEach((card) => {
-    const cb = card.querySelector(".gallery-card__checkbox");
-    card.classList.toggle("gallery-card--selected", cb?.checked ?? false);
+  document.querySelectorAll(".image-card").forEach((card) => {
+    const cb = card.querySelector(".image-card__checkbox");
+    card.classList.toggle("image-card--selected", cb?.checked ?? false);
   });
 
   countEl.textContent = `${n} selected`;
@@ -48,14 +48,14 @@ function syncSelection() {
 
 function enterSelectMode() {
   selectMode = true;
-  grid?.classList.add("gallery-grid--select-mode");
+  grid?.classList.add("image-grid--select-mode");
 
   if (selectBtn) {
     selectBtn.textContent = "Cancel";
     selectBtn.classList.remove("btn--secondary");
   }
 
-  const actionsEl = document.getElementById("gallery-toolbar-actions");
+  const actionsEl = document.getElementById("grid-toolbar-actions");
 
   if (!addToCollectionBtn) {
     addToCollectionBtn = document.createElement("button");
@@ -104,17 +104,17 @@ function enterSelectMode() {
   if (mobileDelete) mobileDelete.disabled = true;
   tabBar?.classList.add("bottom-tab-bar--select-mode");
   actionsBar?.removeAttribute("aria-hidden");
-  toolbar?.classList.add("gallery-toolbar--select-mode");
+  toolbar?.classList.add("grid-toolbar--select-mode");
 }
 
 function exitSelectMode() {
   selectMode = false;
-  grid?.classList.remove("gallery-grid--select-mode");
+  grid?.classList.remove("image-grid--select-mode");
 
-  document.querySelectorAll(".gallery-card__checkbox").forEach((cb) => (cb.checked = false));
+  document.querySelectorAll(".image-card__checkbox").forEach((cb) => (cb.checked = false));
   document
-    .querySelectorAll(".gallery-card")
-    .forEach((card) => card.classList.remove("gallery-card--selected"));
+    .querySelectorAll(".image-card")
+    .forEach((card) => card.classList.remove("image-card--selected"));
 
   if (selectBtn) {
     selectBtn.textContent = "Select";
@@ -127,7 +127,7 @@ function exitSelectMode() {
   countEl.textContent = `${total} ${total === 1 ? "image" : "images"}`;
   tabBar?.classList.remove("bottom-tab-bar--select-mode");
   actionsBar?.setAttribute("aria-hidden", "true");
-  toolbar?.classList.remove("gallery-toolbar--select-mode");
+  toolbar?.classList.remove("grid-toolbar--select-mode");
 }
 
 function submitWithIds(form) {
@@ -150,7 +150,7 @@ selectBtn?.addEventListener("click", () => {
 });
 
 grid?.addEventListener("change", (e) => {
-  if (e.target.matches(".gallery-card__checkbox")) syncSelection();
+  if (e.target.matches(".image-card__checkbox")) syncSelection();
 });
 
 mobileCancel?.addEventListener("click", () => exitSelectMode());

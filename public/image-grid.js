@@ -1,7 +1,7 @@
-const grid = document.getElementById("gallery-grid");
-const toolbar = document.getElementById("gallery-toolbar");
-const countEl = document.getElementById("gallery-count");
-const selectBtn = document.getElementById("gallery-select-btn");
+const grid = document.getElementById("image-grid");
+const toolbar = document.getElementById("grid-toolbar");
+const countEl = document.getElementById("grid-count");
+const selectBtn = document.getElementById("grid-select-btn");
 const modal = document.getElementById("bulk-modal");
 const confirmBtn = document.getElementById("bulk-confirm-btn");
 const cancelBtn = document.getElementById("bulk-cancel-btn");
@@ -17,7 +17,7 @@ let deleteBtn = null;
 let addToCollectionBtn = null;
 
 function selectedIds() {
-  return [...document.querySelectorAll(".gallery-card__checkbox:checked")].map((cb) =>
+  return [...document.querySelectorAll(".image-card__checkbox:checked")].map((cb) =>
     Number(cb.value)
   );
 }
@@ -26,9 +26,9 @@ function syncSelection() {
   const ids = selectedIds();
   const n = ids.length;
 
-  document.querySelectorAll(".gallery-card").forEach((card) => {
-    const cb = card.querySelector(".gallery-card__checkbox");
-    card.classList.toggle("gallery-card--selected", cb?.checked ?? false);
+  document.querySelectorAll(".image-card").forEach((card) => {
+    const cb = card.querySelector(".image-card__checkbox");
+    card.classList.toggle("image-card--selected", cb?.checked ?? false);
   });
 
   countEl.textContent = `${n} selected`;
@@ -48,7 +48,7 @@ function syncSelection() {
 
 function enterSelectMode() {
   selectMode = true;
-  grid?.classList.add("gallery-grid--select-mode");
+  grid?.classList.add("image-grid--select-mode");
 
   // Swap Select button to Cancel + add Delete button in toolbar
   if (selectBtn) {
@@ -56,7 +56,7 @@ function enterSelectMode() {
     selectBtn.classList.remove("btn--secondary");
   }
 
-  const actionsEl = document.getElementById("gallery-toolbar-actions");
+  const actionsEl = document.getElementById("grid-toolbar-actions");
 
   if (!addToCollectionBtn) {
     addToCollectionBtn = document.createElement("button");
@@ -77,7 +77,7 @@ function enterSelectMode() {
     deleteBtn = document.createElement("button");
     deleteBtn.className = "btn btn--small btn--danger";
     deleteBtn.type = "button";
-    deleteBtn.id = "gallery-delete-btn";
+    deleteBtn.id = "grid-delete-btn";
     deleteBtn.textContent = "Delete";
     deleteBtn.disabled = true;
     deleteBtn.addEventListener("click", () => {
@@ -96,18 +96,18 @@ function enterSelectMode() {
   // Mobile: transform bottom tab bar, hide top toolbar
   tabBar?.classList.add("bottom-tab-bar--select-mode");
   actionsBar?.removeAttribute("aria-hidden");
-  toolbar?.classList.add("gallery-toolbar--select-mode");
+  toolbar?.classList.add("grid-toolbar--select-mode");
 }
 
 function exitSelectMode() {
   selectMode = false;
-  grid?.classList.remove("gallery-grid--select-mode");
+  grid?.classList.remove("image-grid--select-mode");
 
   // Clear all checkboxes
-  document.querySelectorAll(".gallery-card__checkbox").forEach((cb) => (cb.checked = false));
+  document.querySelectorAll(".image-card__checkbox").forEach((cb) => (cb.checked = false));
   document
-    .querySelectorAll(".gallery-card")
-    .forEach((card) => card.classList.remove("gallery-card--selected"));
+    .querySelectorAll(".image-card")
+    .forEach((card) => card.classList.remove("image-card--selected"));
 
   // Restore toolbar
   if (selectBtn) {
@@ -121,13 +121,13 @@ function exitSelectMode() {
     deleteBtn.hidden = true;
   }
 
-  const total = document.querySelectorAll(".gallery-card").length;
+  const total = document.querySelectorAll(".image-card").length;
   countEl.textContent = `${total} ${total === 1 ? "image" : "images"}`;
 
   // Mobile: restore bottom tab bar, show top toolbar
   tabBar?.classList.remove("bottom-tab-bar--select-mode");
   actionsBar?.setAttribute("aria-hidden", "true");
-  toolbar?.classList.remove("gallery-toolbar--select-mode");
+  toolbar?.classList.remove("grid-toolbar--select-mode");
 }
 
 selectBtn?.addEventListener("click", () => {
@@ -139,7 +139,7 @@ selectBtn?.addEventListener("click", () => {
 });
 
 grid?.addEventListener("change", (e) => {
-  if (e.target.matches(".gallery-card__checkbox")) syncSelection();
+  if (e.target.matches(".image-card__checkbox")) syncSelection();
 });
 
 mobileCancel?.addEventListener("click", () => {

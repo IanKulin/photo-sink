@@ -4,29 +4,29 @@
 <div class="banner banner--error" role="alert">Delete failed. Please try again.</div>
 <% } %>
 <h1 class="sr-only">All Images</h1>
-<div class="gallery-toolbar" id="gallery-toolbar">
-  <span class="gallery-toolbar__count" id="gallery-count">
+<div class="grid-toolbar" id="grid-toolbar">
+  <span class="grid-toolbar__count" id="grid-count">
     <%= images.length %> <%= images.length === 1 ? 'image' : 'images' %>
   </span>
-  <div class="gallery-toolbar__actions" id="gallery-toolbar-actions">
+  <div class="grid-toolbar__actions" id="grid-toolbar-actions">
   <% if (images.length > 0) { %>
-  <button class="btn btn--small btn--secondary" id="gallery-select-btn" type="button">Select</button>
+  <button class="btn btn--small btn--secondary" id="grid-select-btn" type="button">Select</button>
   <% } %>
   </div>
 </div>
 
     <% if (images.length === 0) { %>
-    <p class="gallery-empty">No images yet. <a href="/">Upload one!</a></p>
+    <p class="image-grid__empty">No images yet. <a href="/">Upload one!</a></p>
     <% } else { %>
-    <div class="gallery-grid" id="gallery-grid">
+    <div class="image-grid" id="image-grid">
       <% images.forEach(function(img) { %>
-      <div class="gallery-card" data-id="<%= img.id %>">
-        <label class="gallery-card__select">
-          <input type="checkbox" class="gallery-card__checkbox" value="<%= img.id %>" aria-label="Select image">
+      <div class="image-card" data-id="<%= img.id %>">
+        <label class="image-card__select">
+          <input type="checkbox" class="image-card__checkbox" value="<%= img.id %>" aria-label="Select image">
         </label>
-        <a href="/image/<%= img.id %>" class="gallery-card__link">
-          <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image" class="gallery-card__img" loading="lazy">
-          <time class="gallery-card__date" datetime="<%= img.created_at %>"><%= img.created_at %></time>
+        <a href="/image/<%= img.id %>" class="image-card__link">
+          <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image" class="image-card__img" loading="lazy">
+          <time class="image-card__date" datetime="<%= img.created_at %>"><%= img.created_at %></time>
         </a>
       </div>
       <% }); %>
@@ -48,7 +48,7 @@
 <%- include('_add-to-collection-modal') %>
 
     <script src="/add-to-collection.js" defer></script>
-    <script src="/gallery.js" defer></script>
+    <script src="/image-grid.js" defer></script>
   <script src="/menu.js" defer></script>
 </main>
 </body>

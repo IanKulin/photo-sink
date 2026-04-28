@@ -16,14 +16,14 @@ async function uploadImage(page, filename) {
   await page.waitForURL("/?success=1");
 }
 
-test.describe("Stage 4 — Gallery Page", () => {
+test.describe("Stage 4 — All Images Page", () => {
   test("GET /allimages renders without error", async ({ page }) => {
     const res = await page.goto("/allimages");
     expect(res.status()).toBe(200);
   });
 
-  test("empty gallery shows friendly message with upload link", async ({ page }) => {
-    // Use a fresh in-memory read to check if gallery might be empty;
+  test("empty image grid shows friendly message with upload link", async ({ page }) => {
+    // Use a fresh in-memory read to check if image grid might be empty;
     // regardless, the empty-state markup must exist in the template.
     // We check by looking at DB state first.
     const db = new Database(process.env.DB_PATH, { readonly: true });
@@ -32,50 +32,52 @@ test.describe("Stage 4 — Gallery Page", () => {
 
     if (count === 0) {
       await page.goto("/allimages");
-      await expect(page.locator(".gallery-empty")).toBeVisible();
-      await expect(page.locator('.gallery-empty a[href="/"]')).toBeVisible();
+      await expect(page.locator(".image-grid__empty")).toBeVisible();
+      await expect(page.locator('.image-grid__empty a[href="/"]')).toBeVisible();
     } else {
-      // Skip assertion — gallery has images, empty state won't show
+      // Skip assertion — image grid has images, empty state won't show
       test.skip();
     }
   });
 
-  test("after uploading an image, gallery shows at least one thumbnail card", async ({ page }) => {
+  test("after uploading an image, image grid shows at least one thumbnail card", async ({
+    page,
+  }) => {
     await uploadImage(page, "red.jpg");
     await page.goto("/allimages");
-    const cards = page.locator(".gallery-card");
+    const cards = page.locator(".image-card");
     await expect(cards.first()).toBeVisible();
   });
 
-  test("gallery thumbnail images have a valid src (thumb URL)", async ({ page }) => {
+  test("image grid thumbnails have a valid src (thumb URL)", async ({ page }) => {
     await uploadImage(page, "green.png");
     await page.goto("/allimages");
-    const firstImg = page.locator(".gallery-card img").first();
+    const firstImg = page.locator(".image-card img").first();
     await expect(firstImg).toBeVisible();
     const src = await firstImg.getAttribute("src");
     expect(src).toMatch(/^\/image\/\d+\/thumb\.jpg$/);
   });
 
-  test("each gallery card shows an upload date", async ({ page }) => {
+  test("each image card shows an upload date", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     await page.goto("/allimages");
-    const date = page.locator(".gallery-card__date").first();
+    const date = page.locator(".image-card__date").first();
     await expect(date).toBeVisible();
     const text = await date.textContent();
     expect(text.trim().length).toBeGreaterThan(0);
   });
 
-  test("clicking a gallery card navigates to /image/:id", async ({ page }) => {
+  test("clicking an image card navigates to /image/:id", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     await page.goto("/allimages");
-    await page.locator(".gallery-card").first().click();
+    await page.locator(".image-card").first().click();
     await expect(page).toHaveURL(/\/image\/\d+/);
   });
 
-  test("gallery grid layout is present in DOM", async ({ page }) => {
+  test("image grid layout is present in DOM", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     await page.goto("/allimages");
-    await expect(page.locator(".gallery-grid")).toBeVisible();
+    await expect(page.locator(".image-grid")).toBeVisible();
   });
 
   test("nav link to /allimages is present in header", async ({ page }) => {
@@ -83,7 +85,7 @@ test.describe("Stage 4 — Gallery Page", () => {
     await expect(page.locator('header a[href="/allimages"]')).toBeVisible();
   });
 
-  test("multiple uploaded images all appear in the gallery", async ({ page }) => {
+  test("multiple uploaded images all appear in the image grid", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     await uploadImage(page, "green.png");
     await uploadImage(page, "blue.webp");
@@ -93,15 +95,15 @@ test.describe("Stage 4 — Gallery Page", () => {
     const totalCount = db.prepare("SELECT COUNT(*) as n FROM images").get().n;
     db.close();
 
-    const cards = page.locator(".gallery-card");
+    const cards = page.locator(".image-card");
     await expect(cards).toHaveCount(totalCount);
   });
 
-  test("gallery cards link href matches /image/:id pattern", async ({ page }) => {
+  test("image cards link href matches /image/:id pattern", async ({ page }) => {
     await uploadImage(page, "red.jpg");
     await page.goto("/allimages");
     const hrefs = await page
-      .locator(".gallery-card__link")
+      .locator(".image-card__link")
       .evaluateAll((els) => els.map((el) => el.getAttribute("href")));
     for (const href of hrefs) {
       expect(href).toMatch(/^\/image\/\d+$/);

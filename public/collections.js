@@ -1,6 +1,6 @@
 const grid = document.getElementById("collection-grid");
-const toolbar = document.getElementById("gallery-toolbar");
-const countEl = document.getElementById("gallery-count");
+const toolbar = document.getElementById("grid-toolbar");
+const countEl = document.getElementById("grid-count");
 const selectBtn = document.getElementById("collections-select-btn");
 const addBtn = document.getElementById("collections-add-btn");
 const bulkModal = document.getElementById("bulk-modal");
@@ -32,7 +32,7 @@ function syncSelection() {
 
   document.querySelectorAll(".collection-card").forEach((card) => {
     const cb = card.querySelector(".collection-card__checkbox");
-    card.classList.toggle("gallery-card--selected", cb?.checked ?? false);
+    card.classList.toggle("image-card--selected", cb?.checked ?? false);
   });
 
   countEl.textContent = `${n} selected`;
@@ -59,7 +59,7 @@ function enterSelectMode() {
     deleteBtn.addEventListener("click", () => {
       if (selectedIds().length > 0) bulkModal.hidden = false;
     });
-    document.getElementById("gallery-toolbar-actions")?.appendChild(deleteBtn);
+    document.getElementById("grid-toolbar-actions")?.appendChild(deleteBtn);
   } else {
     deleteBtn.hidden = false;
   }
@@ -68,7 +68,7 @@ function enterSelectMode() {
   if (mobileDelete) mobileDelete.disabled = true;
   tabBar?.classList.add("bottom-tab-bar--select-mode");
   actionsBar?.removeAttribute("aria-hidden");
-  toolbar?.classList.add("gallery-toolbar--select-mode");
+  toolbar?.classList.add("grid-toolbar--select-mode");
 }
 
 function exitSelectMode() {
@@ -78,7 +78,7 @@ function exitSelectMode() {
   document.querySelectorAll(".collection-card__checkbox").forEach((cb) => (cb.checked = false));
   document
     .querySelectorAll(".collection-card")
-    .forEach((card) => card.classList.remove("gallery-card--selected"));
+    .forEach((card) => card.classList.remove("image-card--selected"));
 
   if (selectBtn) {
     selectBtn.textContent = "Select";
@@ -89,7 +89,7 @@ function exitSelectMode() {
   countEl.textContent = `${total} ${total === 1 ? "collection" : "collections"}`;
   tabBar?.classList.remove("bottom-tab-bar--select-mode");
   actionsBar?.setAttribute("aria-hidden", "true");
-  toolbar?.classList.remove("gallery-toolbar--select-mode");
+  toolbar?.classList.remove("grid-toolbar--select-mode");
 }
 
 selectBtn?.addEventListener("click", () => {

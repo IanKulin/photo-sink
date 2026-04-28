@@ -43,7 +43,7 @@ async function deleteAllCollections(page) {
     await checkboxes.nth(i).check();
   }
   // Delete button is dynamically created in select mode
-  await page.locator("#gallery-toolbar-actions .btn--danger").click();
+  await page.locator("#grid-toolbar-actions .btn--danger").click();
   await page.locator("#bulk-confirm-btn").click();
   await page.waitForURL("/collections");
 }
@@ -138,8 +138,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     await uploadImage(page, "red.jpg");
 
     await page.goto("/allimages");
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(".gallery-card__checkbox").first().check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(".image-card__checkbox").first().check();
     await page.locator("button", { hasText: "Add to collection" }).click();
 
     await expect(page.locator("#atc-modal")).toBeVisible();
@@ -151,8 +151,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     await uploadImage(page, "red.jpg");
 
     await page.goto("/allimages");
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(".gallery-card__checkbox").first().check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(".image-card__checkbox").first().check();
     await page.locator("button", { hasText: "Add to collection" }).click();
 
     await expect(page.locator("#atc-modal")).toBeVisible();
@@ -174,8 +174,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     await request.post(`/api/image/${imageId}/collections/${col.id}/toggle`);
 
     await page.goto("/allimages");
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(`.gallery-card[data-id="${imageId}"] .gallery-card__checkbox`).check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(`.image-card[data-id="${imageId}"] .image-card__checkbox`).check();
     await page.locator("button", { hasText: "Add to collection" }).click();
 
     await expect(page.locator("#atc-modal")).toBeVisible();
@@ -196,8 +196,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     const imageId = await getLastImageId();
 
     await page.goto("/allimages");
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(`.gallery-card[data-id="${imageId}"] .gallery-card__checkbox`).check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(`.image-card[data-id="${imageId}"] .image-card__checkbox`).check();
     await page.locator("button", { hasText: "Add to collection" }).click();
 
     await expect(page.locator("#atc-modal")).toBeVisible();
@@ -221,8 +221,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     await uploadImage(page, "red.jpg");
 
     await page.goto("/allimages");
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(".gallery-card__checkbox").first().check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(".image-card__checkbox").first().check();
     await page.locator("button", { hasText: "Add to collection" }).click();
 
     await expect(page.locator("#atc-modal")).toBeVisible();
@@ -234,8 +234,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     await uploadImage(page, "red.jpg");
 
     await page.goto("/allimages");
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(".gallery-card__checkbox").first().check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(".image-card__checkbox").first().check();
     await page.locator("button", { hasText: "Add to collection" }).click();
     await expect(page.locator("#atc-modal")).toBeVisible();
 
@@ -256,8 +256,8 @@ test.describe("Stage 12 — Add to Collection Modal", () => {
     await request.post(`/api/image/${imageId}/collections/${src.id}/toggle`);
 
     await page.goto(`/collections/${src.slug}`);
-    await page.locator("#gallery-select-btn").click();
-    await page.locator(".gallery-card__checkbox").first().check();
+    await page.locator("#grid-select-btn").click();
+    await page.locator(".image-card__checkbox").first().check();
     await page.locator("button", { hasText: "Add to collection" }).click();
 
     await expect(page.locator("#atc-modal")).toBeVisible();
