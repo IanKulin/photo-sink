@@ -1,11 +1,12 @@
 <%- include('_header', { page: 'collections', pageTitle: collection.name }) %>
 
-<h1 class="sr-only"><%= collection.name %></h1>
 <div class="gallery-toolbar" id="gallery-toolbar">
-  <span class="gallery-toolbar__count" id="gallery-count">
+  <div class="gallery-toolbar__breadcrumb">
     <a href="/collections" class="back-link">&#8592; Collections</a>
-    &nbsp;&nbsp;<%= collection.name %>
-    &mdash; <%= images.length %> <%= images.length === 1 ? 'image' : 'images' %>
+    <h1 class="gallery-toolbar__title"><%= collection.name %></h1>
+  </div>
+  <span class="gallery-toolbar__count" id="gallery-count">
+    <%= images.length %> <%= images.length === 1 ? 'image' : 'images' %>
   </span>
   <div class="gallery-toolbar__actions" id="gallery-toolbar-actions">
     <% if (images.length > 0) { %>

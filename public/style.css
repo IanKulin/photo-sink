@@ -597,6 +597,10 @@ main {
   display: none; /* hidden on desktop */
 }
 
+.bottom-tab-bar-actions {
+  display: none; /* hidden on desktop; mobile select-mode overrides below */
+}
+
 @media (max-width: 600px) {
   .bottom-tab-bar {
     display: flex;
@@ -656,7 +660,7 @@ main {
     height: var(--tab-bar-height);
     background: var(--surface);
     border-top: 1px solid var(--border);
-    z-index: 100;
+    z-index: 201;
   }
 
   .bottom-tab-bar--select-mode + .bottom-tab-bar-actions .bottom-tab-bar__select-cancel,
@@ -759,6 +763,18 @@ main {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.gallery-toolbar__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gallery-toolbar__title {
+  font-size: inherit;
+  font-weight: normal;
+  margin: 0;
 }
 
 .gallery-toolbar__count {
