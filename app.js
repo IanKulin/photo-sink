@@ -102,7 +102,7 @@ app.use((_req, res) => {
 
 // 500 handler
 app.use((err, _req, res, _next) => {
-  logger.error(err.message || String(err));
+  logger.error(err.stack || err.message || String(err));
   res.status(500).render("error", { message: "An unexpected error occurred." });
 });
 
