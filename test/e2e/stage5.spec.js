@@ -96,7 +96,7 @@ test.describe("Stage 5 — Image Detail, Download & Delete", () => {
     const id = await getLastImageId();
     await page.goto(`/image/${id}`);
 
-    await page.locator('a[href="#confirm-delete"]').click();
+    await page.locator("#open-delete-btn").click();
     await page.locator('form[action$="/delete"] button[type="submit"]').click();
     await expect(page).toHaveURL("/allimages");
 
@@ -109,7 +109,7 @@ test.describe("Stage 5 — Image Detail, Download & Delete", () => {
     await uploadImage(page, "red.jpg");
     const id = await getLastImageId();
     await page.goto(`/image/${id}`);
-    await page.locator('a[href="#confirm-delete"]').click();
+    await page.locator("#open-delete-btn").click();
     await page.locator('form[action$="/delete"] button[type="submit"]').click();
     await expect(page).toHaveURL("/allimages");
 
@@ -140,7 +140,7 @@ test.describe("Stage 5 — Image Detail, Download & Delete", () => {
     const id = await getLastImageId();
     await page.goto(`/image/${id}`);
 
-    await page.locator('a[href="#confirm-delete"]').click();
+    await page.locator("#open-delete-btn").click();
     const form = page.locator(`form[action="/image/${id}/delete"]`);
     await expect(form).toBeVisible();
     const method = await form.getAttribute("method");

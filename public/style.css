@@ -332,10 +332,6 @@ main {
   z-index: 300;
 }
 
-.modal-backdrop:target {
-  display: flex;
-}
-
 .modal {
   background: var(--surface);
   border-radius: var(--radius);
@@ -449,7 +445,8 @@ main {
 #create-modal:not([hidden]),
 #remove-modal:not([hidden]),
 #delete-modal:not([hidden]),
-#atc-modal:not([hidden]) {
+#atc-modal:not([hidden]),
+#confirm-delete:not([hidden]) {
   display: flex;
 }
 

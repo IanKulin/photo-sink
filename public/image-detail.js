@@ -7,6 +7,17 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight" && nextUrl) location.href = nextUrl;
 });
 
+const modal = document.getElementById("confirm-delete");
+document.getElementById("open-delete-btn")?.addEventListener("click", () => {
+  modal.hidden = false;
+});
+document.getElementById("cancel-delete-btn")?.addEventListener("click", () => {
+  modal.hidden = true;
+});
+modal?.addEventListener("click", (e) => {
+  if (e.target === modal) modal.hidden = true;
+});
+
 const addBtn = document.getElementById("add-to-collection-btn");
 if (addBtn) {
   const imageIdMatch = location.pathname.match(/\/image\/(\d+)/);

@@ -35,11 +35,11 @@
       <div class="image-shelf__actions">
         <button type="button" id="add-to-collection-btn" class="btn btn--small btn--secondary">Collections...</button>
         <a href="/image/<%= id %>/download" download class="btn btn--small">Download</a>
-        <a href="#confirm-delete" class="btn btn--small btn--danger">Delete</a>
+        <button type="button" id="open-delete-btn" class="btn btn--small btn--danger">Delete</button>
       </div>
     </div>
 
-    <div id="confirm-delete" class="modal-backdrop">
+    <div id="confirm-delete" class="modal-backdrop" hidden role="dialog" aria-modal="true">
       <div class="modal">
         <% if (context === 'collection') { %>
         <p class="modal__body">Delete this image? It will be removed from all collections and cannot be undone.</p>
@@ -47,7 +47,7 @@
         <p class="modal__body">Delete this image? This cannot be undone.</p>
         <% } %>
         <div class="modal__actions">
-          <a href="#" class="btn">Cancel</a>
+          <button type="button" id="cancel-delete-btn" class="btn">Cancel</button>
           <form method="POST" action="/image/<%= id %>/delete" class="modal__form">
             <input type="hidden" name="returnTo" value="<%= deleteReturnTo %>">
             <button type="submit" class="btn btn--danger">Delete</button>

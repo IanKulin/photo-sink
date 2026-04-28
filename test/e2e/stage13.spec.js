@@ -47,7 +47,7 @@ test.describe("Stage 13 — Single Image View: Context, Collections, Navigation"
 
     await page.goto(`/image/${imageId}`);
     await expect(page.locator(`a[href="/image/${imageId}/download"]`)).toBeVisible();
-    await expect(page.locator('a[href="#confirm-delete"]')).toBeVisible();
+    await expect(page.locator("#open-delete-btn")).toBeVisible();
   });
 
   test("/image/:id shows prev/next navigation", async ({ page }) => {
@@ -169,7 +169,7 @@ test.describe("Stage 13 — Single Image View: Context, Collections, Navigation"
     await req.post(`/api/image/${imageId}/collections/${col.id}/toggle`);
 
     await page.goto(`/collections/${col.slug}/image/${imageId}`);
-    await page.locator('a[href="#confirm-delete"]').click();
+    await page.locator("#open-delete-btn").click();
     await page
       .locator('form[action="/image/' + imageId + '/delete"] button[type="submit"]')
       .click();
