@@ -20,8 +20,8 @@
     <div class="gallery-grid" id="gallery-grid">
       <% images.forEach(function(img) { %>
       <div class="gallery-card" data-id="<%= img.id %>">
-        <label class="gallery-card__select" aria-label="Select image">
-          <input type="checkbox" class="gallery-card__checkbox" value="<%= img.id %>">
+        <label class="gallery-card__select">
+          <input type="checkbox" class="gallery-card__checkbox" value="<%= img.id %>" aria-label="Select image">
         </label>
         <a href="/image/<%= img.id %>" class="gallery-card__link">
           <img src="/image/<%= img.id %>/thumb.jpg" alt="Uploaded image" class="gallery-card__img" loading="lazy">

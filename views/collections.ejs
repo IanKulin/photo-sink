@@ -22,8 +22,8 @@
 <div class="collection-grid" id="collection-grid">
   <% collections.forEach(function(col) { %>
   <div class="collection-card" data-id="<%= col.id %>">
-    <label class="gallery-card__select" aria-label="Select collection">
-      <input type="checkbox" class="collection-card__checkbox" value="<%= col.id %>">
+    <label class="gallery-card__select">
+      <input type="checkbox" class="collection-card__checkbox" value="<%= col.id %>" aria-label="Select collection">
     </label>
     <a href="/collections/<%= col.slug %>" class="collection-card__link">
       <% if (col.cover_image_id) { %>
