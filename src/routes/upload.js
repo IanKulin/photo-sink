@@ -206,7 +206,7 @@ router.post("/upload/url", uploadRateLimit, async (req, res) => {
       return res.status(400).render("upload", { error: "Unsupported image type", success: null });
     }
 
-    await storeUpload(imageBuffer, verifiedMime);
+    await storeUpload(imageBuffer, verifiedMime, url);
 
     logger.info("URL upload succeeded (%s)", verifiedMime);
     return res.redirect("/?success=1");

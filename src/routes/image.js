@@ -1,6 +1,6 @@
 import express from "express";
 import { getById, deleteById, getAdjacentImages } from "../db.js";
-import { getImage, getThumb } from "../imageService.js";
+import { getImage, getThumb, setComment } from "../imageService.js";
 import logger from "../logger.js";
 import { MIME_TO_EXT } from "../mimeTypes.js";
 import { safeRedirect } from "../redirect.js";
@@ -91,6 +91,19 @@ router.get("/:id/download", (req, res) => {
   } catch (err) {
     logger.error("Failed to decrypt image for download id=%s: %s", req.params.id, err.message);
     return res.status(500).render("error", { message: "Failed to download image." });
+  }
+});
+
+router.post("/:id/comment", (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const { comment } = req.body;
+    setComment(id, comment || null);
+    logger.info("Comment updated: id=%s", id);
+    return res.redirect(`/image/${id}`);
+  } catch (err) {
+    logger.error("Comment update failed: id=%s: %s", id, err.message);
+    return next(err);
   }
 });
 

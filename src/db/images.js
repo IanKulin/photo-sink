@@ -2,8 +2,8 @@ import db from "./connection.js";
 
 const stmts = {
   insert: db.prepare(`
-    INSERT INTO images (mime_type, iv_image, image_data, iv_thumb, thumb_data, auth_tag_image, auth_tag_thumb)
-    VALUES (@mime_type, @iv_image, @image_data, @iv_thumb, @thumb_data, @auth_tag_image, @auth_tag_thumb)
+    INSERT INTO images (mime_type, iv_image, image_data, iv_thumb, thumb_data, auth_tag_image, auth_tag_thumb, iv_url, url_data, auth_tag_url, iv_comment, comment_data, auth_tag_comment)
+    VALUES (@mime_type, @iv_image, @image_data, @iv_thumb, @thumb_data, @auth_tag_image, @auth_tag_thumb, @iv_url, @url_data, @auth_tag_url, @iv_comment, @comment_data, @auth_tag_comment)
   `),
   getAll: db.prepare("SELECT id, created_at FROM images ORDER BY created_at ASC"),
   getById: db.prepare("SELECT * FROM images WHERE id = ?"),
@@ -22,10 +22,15 @@ const stmts = {
     ORDER BY created_at ASC, id ASC
     LIMIT 1
   `),
+  updateComment: db.prepare(`
+    UPDATE images
+    SET iv_comment = @iv_comment, comment_data = @comment_data, auth_tag_comment = @auth_tag_comment
+    WHERE id = @id
+  `),
   ping: db.prepare("SELECT 1"),
 };
 
-function insertRaw(mime, encImage, encThumb) {
+function insertRaw(mime, encImage, encThumb, encUrl = null, encComment = null) {
   return stmts.insert.run({
     mime_type: mime,
     iv_image: encImage.iv,
@@ -34,6 +39,21 @@ function insertRaw(mime, encImage, encThumb) {
     iv_thumb: encThumb.iv,
     thumb_data: encThumb.ciphertext,
     auth_tag_thumb: encThumb.authTag,
+    iv_url: encUrl?.iv ?? null,
+    url_data: encUrl?.ciphertext ?? null,
+    auth_tag_url: encUrl?.authTag ?? null,
+    iv_comment: encComment?.iv ?? null,
+    comment_data: encComment?.ciphertext ?? null,
+    auth_tag_comment: encComment?.authTag ?? null,
+  });
+}
+
+function updateCommentRaw(id, encComment) {
+  stmts.updateComment.run({
+    id,
+    iv_comment: encComment.iv,
+    comment_data: encComment.ciphertext,
+    auth_tag_comment: encComment.authTag,
   });
 }
 
@@ -76,6 +96,7 @@ const testHelpers = {
 
 export {
   insertRaw,
+  updateCommentRaw,
   deleteManyById,
   getAllImages,
   getById,

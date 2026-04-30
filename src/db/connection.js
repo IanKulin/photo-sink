@@ -18,15 +18,21 @@ db.pragma("foreign_keys = ON");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS images (
-    id             INTEGER PRIMARY KEY AUTOINCREMENT,
-    mime_type      TEXT    NOT NULL,
-    created_at     DATETIME NOT NULL DEFAULT (datetime('now')),
-    iv_image       BLOB    NOT NULL,
-    image_data     BLOB    NOT NULL,
-    iv_thumb       BLOB    NOT NULL,
-    thumb_data     BLOB    NOT NULL,
-    auth_tag_image BLOB    NOT NULL,
-    auth_tag_thumb BLOB    NOT NULL
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    mime_type        TEXT    NOT NULL,
+    created_at       DATETIME NOT NULL DEFAULT (datetime('now')),
+    iv_image         BLOB    NOT NULL,
+    image_data       BLOB    NOT NULL,
+    iv_thumb         BLOB    NOT NULL,
+    thumb_data       BLOB    NOT NULL,
+    auth_tag_image   BLOB    NOT NULL,
+    auth_tag_thumb   BLOB    NOT NULL,
+    iv_url           BLOB,
+    url_data         BLOB,
+    auth_tag_url     BLOB,
+    iv_comment       BLOB,
+    comment_data     BLOB,
+    auth_tag_comment BLOB
   );
 
   CREATE TABLE IF NOT EXISTS collections (

@@ -1,6 +1,7 @@
 import { encrypt } from "../crypto.js";
 
 export function runMigrations(db) {
+  migrateImages(db);
   const cols = db.prepare("PRAGMA table_info(collections)").all();
   const needsMigration = cols.some((c) => c.name === "name" && c.type === "TEXT");
   if (!needsMigration) return;
@@ -56,4 +57,21 @@ export function runMigrations(db) {
   })();
 
   db.pragma("foreign_keys = ON");
+}
+
+function migrateImages(db) {
+  const imgCols = db.prepare("PRAGMA table_info(images)").all();
+  const needsMigration = !imgCols.some((c) => c.name === "iv_url");
+  if (!needsMigration) return;
+
+  for (const col of [
+    "iv_url",
+    "url_data",
+    "auth_tag_url",
+    "iv_comment",
+    "comment_data",
+    "auth_tag_comment",
+  ]) {
+    db.prepare(`ALTER TABLE images ADD COLUMN ${col} BLOB`).run();
+  }
 }
