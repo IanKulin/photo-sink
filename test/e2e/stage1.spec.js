@@ -37,6 +37,12 @@ test.describe("Stage 1 — Project Scaffold & Server Startup", () => {
       "thumb_data",
       "auth_tag_image",
       "auth_tag_thumb",
+      "iv_url",
+      "url_data",
+      "auth_tag_url",
+      "iv_comment",
+      "comment_data",
+      "auth_tag_comment",
     ]);
   });
 
